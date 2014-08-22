@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load threadedcomments_tags %}
+{% block title %}
+{% trans "Forum" %}
+{% endblock %}
+
+{% block content %}
+<div class="span6 profileRows">
+	<h2 class="profileHeading">{{ forum.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	{% if forum %}	
+	 <video width="570" height="340" controls="controls">
+		<source src="{{ forum.uploads.url }}"  type="video/mp4" />
+	</video>
+	{{ forum.uploads.title }}
+	{{ forum.uploads.description }}
+	
+	{% get_comment_list for forum as comments %}
+	{% for comment in comments %}
+		{{ comment.user.get_profile.avatar }}
+		{{ comment.user.get_full_name }}
+		{{ comment.comment}}
+		{{ comment.submit_date }}
+	{% endfor %}
+	<br/>
+
+	{% else %}
+	<p>No Forums exist for this course</p>
+	{% endif %}
+ 	
+	<div style="clear:both;"></div> 
+	</div>
+{% endblock %}
+

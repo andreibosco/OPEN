@@ -12,7 +12,7 @@
 	{% for forum in forums %}
             <li class="clearfix">
             <div class="span5 pull-left alpha">
-		    <a href="{% url 'view_file' course.id forum.id %}"><p><strong>{{ forum.title }}</strong></p></a>
+		    <a href="{% url 'view_forum' course.id forum.id %}"><p><strong>{{ forum.title }}</strong></p></a>
             </div>            
             </li>
 	{% endfor %}           

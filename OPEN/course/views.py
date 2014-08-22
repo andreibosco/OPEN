@@ -110,3 +110,15 @@ def course_forum_list(request, course_id, template_name):
     forums = Forum.objects.filter(course = course)
     return render_to_response(template_name, context_instance=RequestContext(request, {'forums': forums, 'course': course}))
 
+@login_required
+def view_forum(request, course_id, forum_id, template_name):
+    """
+    Display the forum
+    """
+    try:
+        forum = Forum.objects.get(id = forum_id)
+    except Forum.DoesNotExist:
+        forum = None
+
+    return render_to_response(template_name, context_instance=RequestContext(request, {'forum': forum}))
+
