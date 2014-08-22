@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "All User Courses" %}
+{% endblock %}
+
+{% block content %}
+<div class="span6 profileRows">
+	<h2 class="profileHeading">Video Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	{% if vid %}	
+        <video width="570" height="340" controls="controls">
+		<source src="{{ vid.uploads.url }}"  type="video/mp4" />
+	</video>
+	{% else %}
+	<p>No Videos exist for this course</p>
+	{% endif %}
+
+	<div style="clear:both;"></div> 
+	</div>
+
+{% endblock %}
+
+
+

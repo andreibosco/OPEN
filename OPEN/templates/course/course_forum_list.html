@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "All Course Forums" %}
+{% endblock %}
+
+{% block content %}
+<div class="span6 profileRows">
+	<h2 class="profileHeading">Forums for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	{% if forums %}	
+        <ul>
+	{% for forum in forums %}
+            <li class="clearfix">
+            <div class="span5 pull-left alpha">
+		    <a href="{% url 'view_file' course.id forum.id %}"><p><strong>{{ forum.title }}</strong></p></a>
+            </div>            
+            </li>
+	{% endfor %}           
+          </ul>
+	{% else %}
+	<p>No Forums exist for this course</p>
+	{% endif %}
+ 	
+	<div style="clear:both;"></div> 
+	</div>
+{% endblock %}

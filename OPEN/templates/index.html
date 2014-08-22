@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "OPEN Kids - Online Practicing and Educational Networking System" %}
+{% endblock %}
+{% block content %}
+<div class="row">
+      
+        <div class="span10">
+        
+	<div class="pull-left">
+	    <h2 class="ml80">Login to your account</h2>
+	    <form method="POST" action="?next={% url 'index' %}" class="form-horizontal" name="LoginForm">
+		    {% csrf_token %}
+		    <div class="control-group">
+			    <label class="control-label" for="id_username">Username</label>
+			    <div class="controls">
+				    <input type="text" id="id_username" name="username" placeholder="Username">
+				     <input type="hidden" name="form" value="form1">
+			    </div>
+		    </div>
+		    <div class="control-group">
+			    <label class="control-label" for="id_password">Password</label>
+			    <div class="controls">
+				    <input type="password" id="id_password" name="password" placeholder="Password">
+			    </div>
+		    </div>
+		    <div class="control-group">
+			    <div class="controls">
+				    <label class="checkbox">
+					    <input type="checkbox"> Remember me <input type="submit" class="btn ml12" value="Sign In" />
+
+				    </label>
+				   			    </div>
+		    </div>
+	    </form>	
+    
+    	</div>
+
+	<div class="pull-right">
+        <h2 class="ml80";>Don't have an account</h2>
+	<form method="POST" action="?next={% url 'index' %}" class="form-horizontal divider-left" name="SignUpForm">
+		{% csrf_token %}
+		    <div class="control-group">
+			    <label class="control-label" for="inputUsername">Username</label>
+			    <div class="controls">
+				{{ form.username }}
+			    </div>
+		    </div>
+
+		    <div class="control-group">
+			    <label class="control-label" for="inputEmail">Email</label>
+			    <div class="controls">
+				{{ form.email }}
+			    </div>
+		    </div>
+		     <div class="control-group">
+			    <label class="control-label" for="inputFirstName">First Name</label>
+			    <div class="controls">
+				{{ form.first_name }}
+			    </div>
+
+		    </div>
+		     <div class="control-group">		    
+   			    <label class="control-label" for="inputLastName">Last Name</label>
+			    <div class="controls">
+				{{ form.last_name }}
+				<input type="hidden" name="form" value="form2">				    
+			    </div>
+		    </div>
+		    <div class="control-group">
+			    <label class="control-label" for="inputPassword">Password</label>
+			    <div class="controls">
+				{{ form.password }}
+			    </div>
+		    </div>
+		    <div class="control-group">
+			    <label class="control-label" for="inputPassword2">Re-enter</label>
+			    <div class="controls">
+				    <input type="password" id="inputPassword2" name="password2" placeholder="Re-enter Password">
+			    </div>
+		    </div>
+
+
+		    <div class="control-group">
+			    <div class="controls">
+				   <button type="submit" class="btn" id="uploadBtn">Sign Up</button> 
+			    </div>
+		    </div>
+	    </form>
+	</div>
+	
+	        <div style="clear:both;"></div>  
+          
+        </div>
+        
+        
+      </div>
+
+
+
+
+      <div id="formUpload" class="userForm" style="display:none;">
+		<h2>Terms and Conditions</h2>
+         
+          <form action="" class="userFroms">
+		  <p>
+	  <strong>Please read and agree to these Terms and Conditions in order to use this web site.</strong>
+	  </p>
+	  <div id="terms"><p>lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</p></div>
+	  <br/>
+	  <p>
+	  <input type="checkbox" id="confirmation_check"> <strong>I have read and agree to the OPEN Terms and Conditions and their Privacy Policy</strong>         
+	  </p>
+          <div class="clearfix"></div>
+          <a href="#" id="close" class="close close-x"></a>
+          
+	  <p align="center" style="margin:20px 0; ">
+	  	<button type="button" class="btn" id="continueBtn" />Continue</button> 
+	  </p>
+          
+       </form>   
+          
+     
+            
+            
+            </div>
+
+	    
+{% endblock %}
+
+{% block extra_body %}
+<script src="{{ STATIC_URL }}js/jquery.lightbox_me.js"></script>
+
+<script type="text/javascript">
+//$("#formUpload").lightbox_me();
+
+$('#uploadBtn').click(function(e) {    
+    $('#formUpload').lightbox_me({
+        centered: true, 
+        onLoad: function() { 
+            $('#formUpload').find('input:first').focus()
+            }
+        });
+    e.preventDefault();
+});
+
+</script>
+
+<script type="text/javascript">
+$('#continueBtn').click(function(e){
+	var input = $('#confirmation_check').prop('checked');
+	if (input){
+	    $( "#close" ).trigger( "click" );
+	    $( "#uploadBtn" ).parent().html('<button type=\"submit\" class=\"btn\">Sign Up</button>');
+	}
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Sign In" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+        <div class="span10">
+        
+	<div class="ml300">
+	    <h2 class="ml80">Login to your account</h2>
+
+	    {% if form.errors %}
+		<p class="error ml80">Your username and password didn't match. Please try again.</p>
+	    {% endif %}
+
+	    <form method="POST" action="?next={{ next|default:"/" }}" class="form-horizontal">
+		    {% csrf_token %}
+		    <div class="control-group">
+			    <label class="control-label" for="id_username">Username</label>
+			    <div class="controls">
+				    {{ form.username }}
+				     <input type="hidden" name="form" value="form1">				    
+			    </div>
+		    </div>
+		    <div class="control-group">
+			    <label class="control-label" for="id_password">Password</label>
+			    <div class="controls">
+				    {{ form.password }}
+			    </div>
+		    </div>
+		    <div class="control-group">
+			    <div class="controls">
+				    <label class="checkbox">
+					    <input type="checkbox"> Remember me <input type="submit" class="btn ml12" value="Sign In" />
+
+				    </label>
+			    </div>
+		    </div>
+	    </form>	
+	    <p class="ml80">If you don't have an account, you can <a href="{% url 'registration_register' %}">sign
+up</a> for one.
+    
+    	</div>
+
+</div>	
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "All User Courses" %}
+{% endblock %}
+
+{% block content %}
+<div class="span6 profileRows">
+	<h2 class="profileHeading">PDF Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	{% if pdfs %}	
+        <ul>
+	{% for pdf in pdfs %}
+            <li class="clearfix">
+            <div class="span5 pull-left alpha">
+		    <a href="{% url 'view_file' course.id pdf.id %}"><p><strong>{{ pdf.title }}</strong></p></a>
+		    <p class="smallText">{{ pdf.description }}</p>
+            </div>            
+            </li>
+	    <hr>
+	{% endfor %}           
+          </ul>
+	{% else %}
+	<p>No PDFs exist for this course</p>
+	{% endif %}
+ 	
+	<div style="clear:both;"></div> 
+	</div>
+{% endblock %}

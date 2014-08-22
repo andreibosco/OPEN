@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "All User Courses" %}
+{% endblock %}
+
+{% block content %}
+<div class="span6 profileRows">
+	<h2 class="profileHeading">Video Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	{% if videos %}	
+        <ul>
+	{% for video in videos %}
+            <li class="clearfix">
+            <div class="span5 pull-left alpha">
+		    <a href="{% url 'view_video_file' course.id video.id %}"><p><strong>{{ video.title }}</strong></p></a>
+		    <p class="smallText">{{ video.description }}</p>
+            </div>            
+            </li>
+	    <hr>
+	{% endfor %}           
+          </ul>
+	{% else %}
+	<p>No Videos exist for this course</p>
+	{% endif %}
+ 	
+	<div style="clear:both;"></div> 
+	</div>
+
+{% endblock %}
+
+
+

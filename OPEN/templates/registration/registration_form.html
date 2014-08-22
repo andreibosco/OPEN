@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "User Profile" %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+      
+        <div class="span10">
+  {% if form.errors %}
+  <p class="errors">Please correct the errors below: {{ form.non_field_errors }}</p>
+  {% endif %}
+
+  <h2>Complete your user profile</h2>
+  
+  <form method="POST" action="{% url 'registration' %}" class="form-horizontal" name="UserProfileForm">
+	{% csrf_token %}
+
+    <div class="control-group">
+      <label class="control-label" for="id_avatar">Avatar</label>
+      {% if form.avatar.errors %}
+        <p class="errors">{{ form.avatar.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">
+      {{ form.avatar }}
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="id_address">Address</label>
+      {% if form.address.errors %}
+        <p class="errors">{{ form.address.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">      
+      {{ form.address }}
+      </div>
+    </div>
+    <div class="control-group">    
+      <label class="control-label" for="id_country">Country</label>
+      {% if form.country.errors %}
+        <p class="errors">{{ form.country.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">
+      {{ form.country }}
+      </div>
+    </div>
+    <div class="control-group">    
+      <label class="control-label" for="id_city">City</label>
+      {% if form.city.errors %}
+        <p class="errors">{{ form.city.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">
+      {{ form.city }}
+      </div>
+    </div>
+    <div class="control-group">    
+      <label class="control-label" for="id_phone">Phone</label>
+      {% if form.phone.errors %}
+        <p class="errors">{{ form.phone.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">
+      {{ form.phone }}
+      </div>
+    </div>
+    <div class="control-group">    
+      <label class="control-label" for="id_dob">Date of Birth</label>
+      {% if form.date_of_birth.errors %}
+        <p class="errors">{{ form.date_of_birth.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">
+      {{ form.date_of_birth }}
+      </div>
+    </div>
+    <div class="control-group">    
+      <label class="control-label" for="id_website">Web site</label>
+      {% if form.website.errors %}
+        <p class="errors">{{ form.website.errors.as_text }}</p>
+      {% endif %}
+      <div class="controls">
+      {{ form.website }}
+      </div>
+    </div>
+
+    <div class="control-group">
+	<div class="controls">
+		<button type="submit" class="btn">Done</button>
+	</div>
+    </div>
+
+  </form>
+  </div>
+  </div>
+{% endblock %}

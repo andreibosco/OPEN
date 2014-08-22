@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "User Profile" %}
+{% endblock %}
+{% block content %}
+
+    
+ <div class="profile">
+ <div class="container">
+ 	<div class="span8 alpha">
+    <div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
+	    <img src="{{ STATIC_URL }}img/avatar.jpg" />
+        </div>
+	
+   	
+
+    <div class="span6 profileRows">
+	    <h2 class="profileHeading">{{ userprofile.user.get_full_name }}<span class="pull-right"><a href="{% url 'registration_register' %}" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+        	
+            <div class="profileContacts">
+            <div class="caption"><strong>Address:</strong></div>
+	    {% if userprofile.address %}
+	    <div class="details">{{ userprofile.address }}</div> 
+            {% else %}
+	    <div class="details">None</div>
+	    {% endif %}
+            <br />
+
+            <ul class="pull-left clearfix">
+            <li>
+            <div class="caption"><strong>City:</strong></div>
+	    {% if userprofile.city %}	    
+            <div class="details">{{ userprofile.city }}</div>
+	    {% else %}
+	    <div class="details">None</div>
+	    {% endif %}	    
+            </li>
+            
+            <li>
+            <div class="caption"><strong>Phone:</strong></div>
+	    {% if userprofile.phone %}
+            <div class="details">{{ userprofile.phone }}</div>
+	    {% else %}
+	    <div class="details">None</div>
+	    {% endif %}
+            </li>
+            
+            <li>
+            <div class="caption"><strong>Date of Birth:</strong></div>
+	    {% if userprofile. %}	    
+            <div class="details">{{ userprofile.date_of_birth }}</div>            
+	    {% else %}
+	    <div class="details">None</div>
+	    {% endif %}
+            </li>
+            
+            <li>
+            <div class="caption"><strong>Website</strong></div>
+	    {% if userprofile.website %}
+            <div class="details"><a href="{{ userprofile.website }}">{{ userprofile.website }}</a></div>            
+	    {% else %}
+	    <div class="details">None</div>
+	    {% endif %}
+            </li>
+            
+            </ul>
+            
+            
+            <ul class="pull-right clearfix">
+            <li>
+            <div class="caption"><strong>Country:</strong></div>
+	    {% if userprofile. %}	    
+	    <div class="details">{{ userprofile.country.name }}</div>            
+	    {% else %}
+	    <div class="details">None</div>
+	    {% endif %}
+            </li>
+            
+
+            <li>
+            <div class="caption"><strong>E-mail:</strong></div>
+	    {% if userprofile.user.email %}
+	    <div class="details">{{ userprofile.user.email }}</div>            
+	    {% else %}
+	    <div class="details">None</div>
+	    {% endif %}
+            </li>
+            
+           
+           
+            </ul>
+            
+
+        <div style="clear:both;"></div> 
+	</div>
+	 <div class="profileRows">
+		 <h2 class="profileHeading"><i class="course-icon"></i> My Courses <span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2> 
+        	
+		  <ul>
+            <li class="clearfix">
+            <div class="span5 pull-left alpha">
+	    <a href="{% url 'course' '1' %}"><p><strong>Human-Computer Interaction</strong></p></a>
+            <p class="smallText">Human–computer interaction (HCI) involves the study, planning, design and uses of the interaction between people (users) and computers. It is often regarded as the intersection of computer science, behavioral sciences, design, media studies, and several other fields of study.</p>
+            </div>            
+            </li>
+            
+            
+            <li class="clearfix">
+            <div class="span5 pull-left alpha">
+	    <a href="{% url 'course' '1' %}"><p><strong>Gamification</strong></p></a>
+            <p class="smallText">Gamification is the use of game thinking and game mechanics in non-game contexts to engage users in solving problems.[1][2][3] Gamification has been studied and applied in several domains, with some of the main purposes being to engage...</p>
+            </div>            
+            </li>
+            
+            <li class="clearfix">
+            <div class="span5 pull-left alpha">
+	    <a href="{% url 'course' '1' %}"><p><strong>Computer Networks</strong></p></a>
+            <p class="smallText">A computer network or data network is a telecommunications network that allows computers to exchange data. In computer networks, networked computing devices pass data to each other along data connections. The connections (network links) between nodes are established using either cable media or wireless media. The best-known computer network is the Internet.</p>
+            </div>            
+            </li>
+
+            
+          </ul>  
+
+	 </div>	
+
+
+      </div>
+
+	
+   {% endblock %}
