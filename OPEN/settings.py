@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'south',
     'registration',
     'threadedcomments',
-    'django.contrib.comments',    
+    'django.contrib.comments',
+    'sorl.thumbnail',
 
     #my apps
     'OPEN.userprofile',

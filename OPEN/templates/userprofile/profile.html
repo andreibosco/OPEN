@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load thumbnail %}
 {% block title %}
-{% trans "User Profile" %}
+{{ userprofile.user.get_full_name }}{% trans "'s Profile" %}
 {% endblock %}
 {% block content %}
 
@@ -10,7 +11,13 @@
  <div class="container">
  	<div class="span8 alpha">
     <div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
-	    <img src="{{ STATIC_URL }}img/avatar.jpg" />
+
+	     {% if userprofile.avatar %}
+    <a href="#">{% thumbnail userprofile.avatar "120x120" crop="center" as avatar %}<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>{% endthumbnail %}</a>
+    {% else %}
+    <a href="#"><img src="{{ STATIC_URL }}img/blank-avatar.png" /></a>
+    {% endif %}
+
         </div>
 	
    	

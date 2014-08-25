@@ -57,13 +57,15 @@ def registration (request, template_name):
     """
     Show, Create and Edit users profile
     """
+    try:
+        userprofile = request.user.get_profile()
+    except UserProfile.DoesNotExist:
+        userprofile = {}
+
     if request.method == 'POST':
-        try:
-            userprofile = request.user.get_profile()
-        except UserProfile.DoesNotExist:
-            userprofile = {}
         if userprofile:
-            userprofile.avatar = request.POST['avatar']
+            if request.FILES and request.FILES['avatar'] is not None:
+                userprofile.avatar = request.FILES['avatar']
             userprofile.address = request.POST['address']
             userprofile.country = request.POST['country']
             userprofile.city = request.POST['city']
@@ -78,13 +80,8 @@ def registration (request, template_name):
                 obj = form.save(commit = False)
                 obj.user = request.user
                 obj.save()
-                return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': request.user.get_profile()}))
-        return HttpResponseRedirect(reverse('registration_register'))
+        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': request.user.get_profile()}))
     else:
-        try:
-            userprofile = request.user.get_profile()   
-        except UserProfile.DoesNotExist:
-            userprofile = {}
         if userprofile:
             data = {
                 "avatar": userprofile.avatar,
@@ -98,5 +95,6 @@ def registration (request, template_name):
             form = UserProfileForm(data)
         else:
             form = UserProfileForm()
+            
         return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
             

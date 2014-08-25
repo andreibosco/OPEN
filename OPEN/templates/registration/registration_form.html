@@ -14,7 +14,7 @@
 
   <h2>Complete your user profile</h2>
   
-  <form method="POST" action="{% url 'registration' %}" class="form-horizontal" name="UserProfileForm">
+  <form enctype="multipart/form-data" method="POST" action="{% url 'registration' %}" class="form-horizontal" name="UserProfileForm">
 	{% csrf_token %}
 
     <div class="control-group">
@@ -23,7 +23,7 @@
         <p class="errors">{{ form.avatar.errors.as_text }}</p>
       {% endif %}
       <div class="controls">
-      {{ form.avatar }}
+	      {{ form.avatar }}
       </div>
     </div>
     <div class="control-group">
