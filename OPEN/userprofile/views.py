@@ -51,7 +51,6 @@ def index (request, template_name):
             return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
     return HttpResponseRedirect(reverse('registration_register'))
     
-
 @login_required
 def registration (request, template_name):
     """
@@ -63,24 +62,26 @@ def registration (request, template_name):
         userprofile = {}
 
     if request.method == 'POST':
-        if userprofile:
-            if request.FILES and request.FILES['avatar'] is not None:
-                userprofile.avatar = request.FILES['avatar']
-            userprofile.address = request.POST['address']
-            userprofile.country = request.POST['country']
-            userprofile.city = request.POST['city']
-            userprofile.phone = request.POST['phone']
-            if request.POST['date_of_birth']:
-                userprofile.date_of_birth = request.POST['date_of_birth']
-            userprofile.website = request.POST['website']
-            userprofile.save()
-        else:
-            form = UserProfileForm(request.POST)
-            if form.is_valid():
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            if userprofile:
+                if request.FILES and request.FILES['avatar'] is not None:
+                    userprofile.avatar = request.FILES['avatar']
+                userprofile.address = request.POST['address']
+                userprofile.country = request.POST['country']
+                userprofile.city = request.POST['city']
+                userprofile.phone = request.POST['phone']
+                if request.POST['date_of_birth']:
+                    userprofile.date_of_birth = request.POST['date_of_birth']
+                userprofile.website = request.POST['website']
+                userprofile.save()
+            else:
                 obj = form.save(commit = False)
                 obj.user = request.user
                 obj.save()
-        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': request.user.get_profile()}))
+            return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': request.user.get_profile()}))        
+        else:
+            return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
     else:
         if userprofile:
             data = {
