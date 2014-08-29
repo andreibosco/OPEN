@@ -12,11 +12,11 @@
  	<div class="span8 alpha">
     <div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
 
-	     {% if userprofile.avatar %}
-    <a href="#">{% thumbnail userprofile.avatar "120x120" crop="center" as avatar %}<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>{% endthumbnail %}</a>
-    {% else %}
-    <a href="#"><img src="{{ STATIC_URL }}img/blank-avatar.png" /></a>
-    {% endif %}
+	{% if userprofile.avatar %}
+    		{% thumbnail userprofile.avatar "120x120" crop="center" as avatar %}<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>{% endthumbnail %}
+    	{% else %}
+    		<img src="{{ STATIC_URL }}img/blank-avatar.png" />
+	{% endif %}
 
         </div>
 	
@@ -55,7 +55,7 @@
             
             <li>
             <div class="caption"><strong>Date of Birth:</strong></div>
-	    {% if userprofile. %}	    
+	    {% if userprofile.date_of_birth %}	    
             <div class="details">{{ userprofile.date_of_birth }}</div>            
 	    {% else %}
 	    <div class="details">None</div>
@@ -77,7 +77,7 @@
             <ul class="pull-right clearfix">
             <li>
             <div class="caption"><strong>Country:</strong></div>
-	    {% if userprofile. %}	    
+	    {% if userprofile.country %}	    
 	    <div class="details">{{ userprofile.country.name }}</div>            
 	    {% else %}
 	    <div class="details">None</div>
