@@ -13,16 +13,16 @@
 	    <form method="POST" action="?next={% url 'index' %}" class="form-horizontal" name="LoginForm">
 		    {% csrf_token %}
 		    <div class="control-group">
-			    <label class="control-label" for="id_username">Username</label>
+			    <label class="control-label" for="username">Username</label>
 			    <div class="controls">
-				    <input type="text" id="id_username" name="username" placeholder="Username">
+				    <input type="text" id="username" name="username" placeholder="Username">
 				     <input type="hidden" name="form" value="form1">
 			    </div>
 		    </div>
 		    <div class="control-group">
-			    <label class="control-label" for="id_password">Password</label>
+			    <label class="control-label" for="password">Password</label>
 			    <div class="controls">
-				    <input type="password" id="id_password" name="password" placeholder="Password">
+				    <input type="password" id="password" name="password" placeholder="Password">
 			    </div>
 		    </div>
 		    <div class="control-group">
@@ -45,6 +45,7 @@
 			    <label class="control-label" for="inputUsername">Username</label>
 			    <div class="controls">
 				{{ form.username }}
+			        <div class="error"></div>	
 			    </div>
 		    </div>
 
@@ -72,19 +73,23 @@
 			    <label class="control-label" for="inputPassword">Password</label>
 			    <div class="controls">
 				{{ form.password }}
+			        <div class="error"></div>					
 			    </div>
 		    </div>
 		    <div class="control-group">
 			    <label class="control-label" for="inputPassword2">Re-enter</label>
 			    <div class="controls">
-				    <input type="password" id="inputPassword2" name="password2" placeholder="Re-enter Password">
+				<input type="password" id="inputPassword2" name="password2" placeholder="Re-enter Password">
+ 			        <div class="error"></div>	
+				    
 			    </div>
 		    </div>
 
 
 		    <div class="control-group">
 			    <div class="controls">
-				   <button type="submit" class="btn" id="uploadBtn">Sign Up</button> 
+				   <button class="btn" id="uploadBtn">Term & Conditions</button>
+				   <button type="submit" class="btn" id="signup" disabled>Sign Up</button>
 			    </div>
 		    </div>
 	    </form>
@@ -105,7 +110,7 @@
          
           <form action="" class="userFroms">
 		  <p>
-	  <strong>Please read and agree to these Terms and Conditions in order to use this web site.</strong>
+	  <strong>Please read and agree to the Terms and Conditions in order to use this web site.</strong>
 	  </p>
 	  <div id="terms"><p>lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum</p></div>
 	  <br/>
@@ -152,9 +157,70 @@ $('#continueBtn').click(function(e){
 	var input = $('#confirmation_check').prop('checked');
 	if (input){
 	    $( "#close" ).trigger( "click" );
-	    $( "#uploadBtn" ).parent().html('<button type=\"submit\" class=\"btn\">Sign Up</button>');
+	     document.getElementById("signup").disabled = false;
 	}
 });
+</script>
+
+<script type="text/javascript">
+$('#id_username').change(function(event){
+		console.log(document.getElementById('id_username').value);
+$.ajax({
+        url : "{% url 'username_available' %}",
+        type: "POST",
+        data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+	               username: document.getElementById('id_username').value,
+               },
+        dataType : "json",
+        success: function( response ){
+            
+            if(response == "True"){
+		document.getElementById('id_username').nextSibling.nextSibling.innerHTML = ''
+		
+            }
+            else {
+		document.getElementById('id_username').nextSibling.nextSibling.innerHTML = '<p>Username already exists</p>'
+            }
+        }
+    });
+});
+</script>
+
+<script type="text/javascript">
+	$('#signup').click(function(event){
+		var username = $('#id_username').val();
+		var password = $('#id_password').val();
+		var password2 = $('#inputPassword2').val();
+		var flag = true;
+		
+		if (!username){
+			document.getElementById('id_username').nextSibling.nextSibling.innerHTML = '<p>Please enter a username</p>'
+			flag = false;
+		}
+		else if(document.getElementById('id_username').nextSibling.nextSibling.innerHTML != ''){
+			alert('Please enter another username');
+			flag = false;
+		}
+		
+		if (!password){
+			document.getElementById('id_password').nextSibling.nextSibling.innerHTML = '<p>Please enter a password</p>'
+			flag = false;			
+		}
+		else{
+			document.getElementById('id_password').nextSibling.nextSibling.innerHTML = ''		
+		}
+		
+		if (!password2){
+			document.getElementById('inputPassword2').nextSibling.nextSibling.innerHTML = '<p>Please re-enter a password</p>'
+			flag = false;			
+		}
+		else if (password != password2){
+			document.getElementById('inputPassword2').nextSibling.nextSibling.innerHTML = ''					
+			alert('Passwords don\'t match');
+			flag = false;
+		}
+		return flag;
+	});
 </script>
 
 {% endblock %}

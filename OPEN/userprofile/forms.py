@@ -8,9 +8,8 @@ class UserForm(ModelForm):
         model = User
         fields = ('username', 'email', 'password', 'first_name', 'last_name')
         widgets = {
-            'password': PasswordInput(),
+            'password': PasswordInput(attrs={'placeholder': 'Password'}),
             'username': TextInput(attrs={'placeholder': 'Username'}),
-            'password': TextInput(attrs={'placeholder': 'Password'}),
             'email': TextInput(attrs={'placeholder': 'Email'}),
             'first_name': TextInput(attrs={'placeholder': 'First Name'}),
             'last_name': TextInput(attrs={'placeholder': 'Last Name'}),    

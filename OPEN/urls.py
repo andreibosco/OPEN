@@ -27,6 +27,8 @@ urlpatterns = patterns('',
         { 'template_name': 'index.html' },
         name = 'index' ),
 
+    url(r'^accounts/', include('OPEN.account.urls')),
+    
     url(r'^profile/', include('OPEN.userprofile.urls')),
 
     url(r'^course/', include('OPEN.course.urls')),

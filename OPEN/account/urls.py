@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, url
 
+from OPEN.account.views import username_available
+
 
 urlpatterns = patterns('',
 
@@ -12,5 +14,12 @@ urlpatterns = patterns('',
 	'django.contrib.auth.views.logout', 
 	{'next_page': '/accounts/login/'},
     ),
+
+    url(r'^username/available/$',
+       username_available,
+       name = 'username_available'
+    ),
+
+
 
 )
