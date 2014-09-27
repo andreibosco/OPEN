@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load thumbnail %}
 {% load threadedcomments_tags %}
 {% block title %}
-{% trans "Forum" %}
+{% trans "Forum for " %}{{ forum.title }}
 {% endblock %}
 
 {% block content %}
@@ -12,22 +13,43 @@
 	 <video width="570" height="340" controls="controls">
 		<source src="{{ forum.uploads.url }}"  type="video/mp4" />
 	</video>
-	{{ forum.uploads.title }}
-	{{ forum.uploads.description }}
+	
+	<div class="media-body mb20">
+		<h4 class="media-heading">{{ forum.uploads.title }}</h4>
+		<div class="media">{{ forum.uploads.description }}</div>	
+	</div>
 	
 	{% get_comment_list for forum as comments %}
-	{% for comment in comments %}
-		{{ comment.user.get_profile.avatar }}
-		{{ comment.user.get_full_name }}
-		{{ comment.comment}}
-		{{ comment.submit_date }}
-	{% endfor %}
-	<br/>
+	<ul>
+	    {% for comment in comments %}
+  		<li class="clearfix span7">
+		    <div class="thumbs pull-left"><a href="#">
+			{% thumbnail comment.user.get_profile.avatar "50x50" crop="center" as avatar %}
+				<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>
+			{% endthumbnail %}</a>
+		    </div>
+
+		    <div class="documentsInfo span5 ml10">
+			<p><a href="#"><strong>{{ comment.user.get_full_name }}</strong></a> - <a href="#" class="smallText">{{ comment.submit_date }}</a></p>
+			<p><a href="#" class="smallText">{{ comment.comment }}</a></p>
+		    </div>
+		</li>		
+    	    {% endfor %}
+	</ul>	
 
 	{% else %}
 	<p>No Forums exist for this course</p>
 	{% endif %}
- 	
+	
+	<form method="POST" action="">
+	    {% csrf_token %}
+	    <div class="input-append">
+		<input class="span2" id="comment" type="text" placeholder="Write a comment">
+		<button class="btn" type="button">Submit</button>
+	    </div>
+	</form>
+
+        	
 	<div style="clear:both;"></div> 
 	</div>
 {% endblock %}
