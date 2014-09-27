@@ -5,15 +5,30 @@
 {% endblock %}
 
 {% block content %}
+<div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
+	    <img src="{{ STATIC_URL }}img/course.jpg" />
+        </div>
+
 <div class="span6 profileRows">
 	<h2 class="profileHeading">Video Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	<ul class="nav nav-tabs ml150" style="border-bottom:None;">
+	  <li class="pull-left"><a href="{% url 'course_pdf_list' course.id %}">PDF</a></li>
+	  <li class="pull-left"><a href="#">Quizzes</a></li>
+	  <li class="pull-left"><a href="{% url 'course_forum_list' course.id %}">Forums</a></li>
+	  <li class="pull-left active"><a href="{% url 'course_video_list' course.id %}">Videos</a></li>
+	</ul>
+
 	{% if videos %}	
         <ul>
 	{% for video in videos %}
             <li class="clearfix">
             <div class="span5 pull-left alpha">
 		    <a href="{% url 'view_video_file' course.id video.id %}"><p><strong>{{ video.title }}</strong></p></a>
-		    <p class="smallText">{{ video.description }}</p>
+		    {% if video.description %}
+		    	<p class="smallText">{{ video.description }}</p>
+		    {% else %}
+			<p class="smallText">No content found</p>
+		    {% endif %}
             </div>            
             </li>
 	    <hr>

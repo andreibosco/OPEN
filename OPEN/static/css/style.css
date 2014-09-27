@@ -24,8 +24,11 @@
 
 .small-text{font-size:11px; color:#777;}
 
+.mb20 {margin-bottom:20px;}
 .ml80 {margin-left:80px;}
 .ml12 {margin-left:12px;}
+.ml10 {margin-left:10px !important;}
+.ml150 {margin-left:150px !important;}
 .ml300 {margin-left:300px;}
 .p0 {padding:0px !important;}
 
@@ -106,3 +109,12 @@ li.cart{background-position: 109px 38px;}
 .course-icon{background-image:url("../img/course-Icon.png"); background-position:1px 1px; background-repeat:no-repeat; padding-left:30px;}
 
 #regForm{margin: 0 0 0 -50px;}
+
+.documentsInfo{margin-left:10px; font-size:12px; float:left; display:block;}
+.documentsInfo p{margin:0; line-height:16px;}
+.documentsInfo a{color:#555;}
+.documentsInfo a.smallText{font-size:11px; color:#777;}
+
+#comment {
+    width:80%;
+}
