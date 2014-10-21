@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -5,8 +7,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
+from django.utils import simplejson
 
 from OPEN.course.models import Course, Forum, UploadedFile
+
+from annoying.decorators import ajax_request
+from threadedcomments.models import ThreadedComment
 
 
 @login_required
@@ -62,7 +68,7 @@ def view_file(request, course_id, pdf_id, template_name):
     """
     pdf = UploadedFile.objects.get(id = pdf_id)
     name = pdf.uploads.name.split('/')[1]
-
+    
     with open('%s%s' % (settings.MEDIA_ROOT, pdf.uploads)) as pdf:
         response = HttpResponse(pdf.read(), mimetype='application/pdf')
         response['Content-Disposition'] = 'inline;filename=%s' % name
@@ -122,3 +128,27 @@ def view_forum(request, course_id, forum_id, template_name):
 
     return render_to_response(template_name, context_instance=RequestContext(request, {'forum': forum}))
 
+@login_required
+@ajax_request
+def add_comment(request, course_id, forum_id):
+    """
+        Add a comment in the forum
+    """
+    if request.is_ajax() and request.POST.get('comment'):
+        if request.method == 'POST':
+            try:
+                user = User.objects.get(username = request.user.username)
+            except User.DoesNotExist:
+                return HttpResponseRedirect(reverse('registration_register'))
+            comment = request.POST.get('comment')
+            
+            comment = ThreadedComment.objects.create(comment = comment, user_id = user.id, content_type_id = '22', site_id = '1', object_pk = forum_id, submit_date = datetime.datetime.now())
+            
+            date = comment.submit_date.strftime("%b. %d, %Y, %I:%M ")
+            if comment.submit_date.strftime('%p') == 'AM':
+                date = str(date) + 'a.m.'
+            else:
+                date = str(date) + 'p.m.'
+          
+            return HttpResponse(simplejson.dumps({"status": True, "name": user.get_full_name(), "avatar": str(user.get_profile().avatar.url), "comment": comment.comment, "date": str(date)}), mimetype = 'application/json')
+    return HttpResponse(simplejson.dumps({"status": False}))

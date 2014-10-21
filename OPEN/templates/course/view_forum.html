@@ -20,32 +20,39 @@
 	</div>
 	
 	{% get_comment_list for forum as comments %}
-	<ul>
+	<ul id="commentsContainer">
+	{% if comments %}		
 	    {% for comment in comments %}
   		<li class="clearfix span7">
-		    <div class="thumbs pull-left"><a href="#">
-			{% thumbnail comment.user.get_profile.avatar "50x50" crop="center" as avatar %}
-				<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>
-			{% endthumbnail %}</a>
+		    <div class="thumbs pull-left">
+			{% if comment.user.get_profile.avatar %}
+				{% thumbnail comment.user.get_profile.avatar "50x50" crop="center" as avatar %}
+					<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>
+				{% endthumbnail %}
+			{% else %}
+    				<img src="{{ STATIC_URL }}img/blank-avatar.png" />	
+			{% endif %}
 		    </div>
 
 		    <div class="documentsInfo span5 ml10">
-			<p><a href="#"><strong>{{ comment.user.get_full_name }}</strong></a> - <a href="#" class="smallText">{{ comment.submit_date }}</a></p>
-			<p><a href="#" class="smallText">{{ comment.comment }}</a></p>
+			<p><a href="{% url 'index' %}"><strong>{{ comment.user.get_full_name }}</strong></a> - <a href="javascript:void(0);" class="smallText">{{ comment.submit_date }}</a></p>
+			<p class="smallText">{{ comment.comment }}</p>
 		    </div>
 		</li>		
     	    {% endfor %}
-	</ul>	
-
 	{% else %}
-	<p>No Forums exist for this course</p>
+	<p id="noComments" class="smallText">No comments exist for this forum</p>
+	{% endif %}
+    	</ul>	
+	{% else %}
+	<p class="smallText">No forums exist for this course</p>
 	{% endif %}
 	
 	<form method="POST" action="">
 	    {% csrf_token %}
 	    <div class="input-append">
 		<input class="span2" id="comment" type="text" placeholder="Write a comment">
-		<button class="btn" type="button">Submit</button>
+		<button class="btn" id="submit_comment" type="button">Submit</button>
 	    </div>
 	</form>
 
@@ -54,3 +61,30 @@
 	</div>
 {% endblock %}
 
+{% block extra_body %}
+<script type="text/javascript">
+    $("#submit_comment").click(function(event){
+    event.preventDefault(); 
+		    
+	$.ajax({
+	    url : "{% url 'add_comment' forum.course.id forum.id %}",
+	    type : "POST",
+	    data : {csrfmiddlewaretoken : document.getElementsByName('csrfmiddlewaretoken')[0].value,
+	    		comment : $("#comment").val(),
+	    	},
+	    dateType : "json",
+	    success : function(response){
+	    	if(response.status){
+		    var str = document.getElementById('commentsContainer').innerHTML;
+		    str = str.concat('<li class="clearfix span7"><div class="thumbs pull-left"><a href="javascript:void(0);"><img width="50/" height="50" src="' + response.avatar + '"></a></div><div class="documentsInfo span5 ml10"><p><a href="{% url "index" %}"><strong>' + response.name + '</strong></a> - <a href="javascript:void(0);" class="smallText">' + response.date + '</a></p><p class="smallText">' + response.comment + '</p></div></li>')
+		    document.getElementById('commentsContainer').innerHTML = str;
+		    $('#comment').val('');
+		    if(document.getElementById('noComments')){
+			    document.getElementById('noComments').innerHTML = '';
+			}
+	    	}
+	    }	
+	});
+    });
+</script>
+{% endblock %}

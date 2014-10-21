@@ -7,3 +7,5 @@ django-registration==1.0
 django-threadedcomments==0.9
 sorl-thumbnail==11.12
 django-annoying==0.8.0
+pytz==2014.7
+
