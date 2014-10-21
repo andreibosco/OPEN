@@ -48,10 +48,12 @@ class Grade( TimeStampAwareModel ):
     
     grade = models.CharField(max_length = 2,
                                  choices = GRADE_CHOICES,
+                                 blank = True,
+                                 null = True,
                                  default = '')
 
     def __unicode__(self):
-        return _("%s") % (self.title)
+        return _("%s_%s") % (self.user, self.course)
 
 
     class Meta:

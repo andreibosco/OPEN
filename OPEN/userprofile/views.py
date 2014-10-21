@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 
+from OPEN.course.models import Grade
 from OPEN.userprofile.forms import UserForm, UserProfileForm
 from OPEN.userprofile.models import UserProfile
 
@@ -18,7 +19,8 @@ def index (request, template_name):
     """
     if request.user.is_authenticated():
         userprofile = request.user.get_profile()
-        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile}))
+        grades = Grade.objects.filter(user = userprofile.user).order_by('-date_added')
+        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
     else: 
         if request.POST:
             form_type = request.POST['form']
