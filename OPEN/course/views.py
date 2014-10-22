@@ -9,7 +9,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
-from OPEN.course.models import Course, Forum, UploadedFile
+from OPEN.course.models import Course, Forum, Grade, UploadedFile
 
 from annoying.decorators import ajax_request
 from threadedcomments.models import ThreadedComment
@@ -36,11 +36,9 @@ def all_user_courses(request, template_name):
     except User.DoesNotExist:
         return HttpResponseRedirect(reverse('registration_register'))
     
-    #grades = Grade.objects.filter(user = user)
-    #Grade is the relationship between a course and a student
-    #course registration not done.
-    courses = Course.objects.all()
-    return render_to_response(template_name, context_instance=RequestContext(request, {'courses': courses}))
+    grades = Grade.objects.filter(user = user).order_by('-date_added')
+
+    return render_to_response(template_name, context_instance=RequestContext(request, {'grades': grades}))
 
 @login_required
 def course_pdf_list(request, course_id, template_name):

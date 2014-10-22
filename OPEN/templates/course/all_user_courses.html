@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-{% trans "All User Courses" %}
+{% trans "User's Courses" %}
 {% endblock %}
 
 {% block content %}
@@ -9,30 +9,15 @@
 	<h2 class="profileHeading">{{ request.user.get_full_name }}'s Courses<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
         	
         <ul>
+	{% for grade in grades %}
             <li class="clearfix">
             <div class="span5 pull-left alpha">
-	    <a href="{% url 'course' '1' %}"><p><strong>Human-Computer Interaction</strong></p></a>
-            <p class="smallText">Human–computer interaction (HCI) involves the study, planning, design and uses of the interaction between people (users) and computers. It is often regarded as the intersection of computer science, behavioral sciences, design, media studies, and several other fields of study.</p>
+		    <a href="{% url 'course' grade.course.id %}"><p><strong>{{ grade.course.title }}</strong></p></a>
+		    <p class="smallText">{{ grade.course.description }}</p>
             </div>            
             </li>
 	    <hr>
-            
-            <li class="clearfix">
-            <div class="span5 pull-left alpha">
-	    <a href="{% url 'course' '1' %}"><p><strong>Gamification</strong></p></a>
-            <p class="smallText">Gamification is the use of game thinking and game mechanics in non-game contexts to engage users in solving problems.[1][2][3] Gamification has been studied and applied in several domains, with some of the main purposes being to engage...</p>
-            </div>            
-            </li>
-	    <hr>
-	    
-            <li class="clearfix">
-            <div class="span5 pull-left alpha">
-	    <a href="{% url 'course' '1' %}"><p><strong>Computer Networks</strong></p></a>
-            <p class="smallText">A computer network or data network is a telecommunications network that allows computers to exchange data. In computer networks, networked computing devices pass data to each other along data connections. The connections (network links) between nodes are established using either cable media or wireless media. The best-known computer network is the Internet.</p>
-            </div>            
-            </li>
-	<hr>
-            
+	{% endfor %}
           </ul>  
  	
 	<div style="clear:both;"></div> 
