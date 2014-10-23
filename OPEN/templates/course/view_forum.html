@@ -9,9 +9,9 @@
 {% block content %}
 <div class="span6 profileRows">
 	<h2 class="profileHeading">{{ forum.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
-	{% if forum %}	
+	{% if forum %}
 	 <video width="570" height="340" controls="controls">
-		<source src="{{ forum.uploads.url }}"  type="video/mp4" />
+		<source src="{{ forum.uploads.uploads.url }}"  type="video/mp4" />
 	</video>
 	
 	<div class="media-body mb20">
@@ -30,7 +30,7 @@
 					<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>
 				{% endthumbnail %}
 			{% else %}
-    				<img src="{{ STATIC_URL }}img/blank-avatar.png" />	
+    				<img src="{{ STATIC_URL }}img/blank-avatar-50x50.jpg" />	
 			{% endif %}
 		    </div>
 
@@ -76,6 +76,7 @@
 	    success : function(response){
 	    	if(response.status){
 		    var str = document.getElementById('commentsContainer').innerHTML;
+		    console.log(response.avatar);
 		    str = str.concat('<li class="clearfix span7"><div class="thumbs pull-left"><a href="javascript:void(0);"><img width="50/" height="50" src="' + response.avatar + '"></a></div><div class="documentsInfo span5 ml10"><p><a href="{% url "index" %}"><strong>' + response.name + '</strong></a> - <a href="javascript:void(0);" class="smallText">' + response.date + '</a></p><p class="smallText">' + response.comment + '</p></div></li>')
 		    document.getElementById('commentsContainer').innerHTML = str;
 		    $('#comment').val('');

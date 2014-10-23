@@ -147,6 +147,11 @@ def add_comment(request, course_id, forum_id):
                 date = str(date) + 'a.m.'
             else:
                 date = str(date) + 'p.m.'
+
+            if user.get_profile().avatar.url:
+                avatar = str(user.get_profile().avatar.url)
+            else:
+                avatar = settings.STATIC_URL + "img/blank-avatar-50x50.jpg"
           
-            return HttpResponse(simplejson.dumps({"status": True, "name": user.get_full_name(), "avatar": str(user.get_profile().avatar.url), "comment": comment.comment, "date": str(date)}), mimetype = 'application/json')
+            return HttpResponse(simplejson.dumps({"status": True, "name": user.get_full_name(), "avatar": avatar, "comment": comment.comment, "date": str(date)}), mimetype = 'application/json')
     return HttpResponse(simplejson.dumps({"status": False}))
