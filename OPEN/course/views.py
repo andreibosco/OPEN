@@ -53,9 +53,9 @@ def course_pdf_list(request, course_id, template_name):
     try:
         course = Course.objects.get(id = course_id)
     except Course.DoesNotExist:
-        course = None
+        return HttpResponseRedirect(reverse('index'))        
     
-    pdfs = UploadedFile.objects.filter(file_type = 'PDF')
+    pdfs = UploadedFile.objects.filter(file_type = 'PDF', course = course.id)
  
     return render_to_response(template_name, context_instance=RequestContext(request, {'pdfs': pdfs, 'course': course}))
 
@@ -86,9 +86,9 @@ def course_video_list(request, course_id, template_name):
     try:
         course = Course.objects.get(id = course_id)
     except Course.DoesNotExist:
-        course = None
+        return HttpResponseRedirect(reverse('index'))                
     
-    videos = UploadedFile.objects.filter(file_type = 'VID')
+    videos = UploadedFile.objects.filter(file_type = 'VID', course = course.id)
     return render_to_response(template_name, context_instance=RequestContext(request, {'videos': videos, 'course': course}))
 
 @login_required
