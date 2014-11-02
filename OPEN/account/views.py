@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render
 from django.utils import simplejson
 from django.views.decorators.csrf import csrf_exempt
 
@@ -21,4 +22,7 @@ def username_available(request):
                 return HttpResponse(simplejson.dumps('True'), mimetype = 'application/json' )
             return HttpResponse(simplejson.dumps('False'), mimetype = 'application/json' )            
     return HttpResponseRedirect('/')
+
+def handler404(request):
+    return render(request, '404.html')
 

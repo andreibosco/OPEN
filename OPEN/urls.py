@@ -32,8 +32,8 @@ urlpatterns = patterns('',
     url(r'^profile/', include('OPEN.userprofile.urls')),
 
     url(r'^course/', include('OPEN.course.urls')),
-    
 
+    url(r'^quiz/', include('OPEN.quiz.urls')), 
 
 )
 
@@ -46,3 +46,6 @@ urlpatterns += patterns('',
     url(r'^adminmedia/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': settings.STATIC_ROOT + '/admin', 'show_indexes': True}),
 )
+
+handler404 = 'OPEN.account.views.handler404'
+
