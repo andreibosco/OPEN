@@ -10,6 +10,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 
 from OPEN.course.models import Course, Forum, Grade, UploadedFile
+from OPEN.quiz.models import Quiz
 
 from annoying.decorators import ajax_request
 from threadedcomments.models import ThreadedComment
@@ -155,3 +156,40 @@ def add_comment(request, course_id, forum_id):
           
             return HttpResponse(simplejson.dumps({"status": True, "name": user.get_full_name(), "avatar": avatar, "comment": comment.comment, "date": str(date)}), mimetype = 'application/json')
     return HttpResponse(simplejson.dumps({"status": False}))
+
+@login_required
+def available_course(request, template_name):
+    """
+
+    """
+    try:
+        user = User.objects.get(username = request.user.username)
+    except User.DoesNotExist:
+        return HttpResponseRedirect(reverse('registration_register'))
+    
+    user_courses = Grade.objects.filter(user = user).values('course')
+    
+    print user_courses
+    list_course_ids = [course['course'] for course in user_courses]
+    courses = Course.objects.exclude(id__in=list_course_ids)
+  
+    return render_to_response(template_name, context_instance=RequestContext(request, {'courses': courses}))
+
+@login_required
+def course_quiz_list(request, course_id, template_name):
+    """
+    Display list of quizzes against a course
+    """
+    try:
+        user = User.objects.get(username = request.user.username)
+    except User.DoesNotExist:
+        return HttpResponseRedirect(reverse('registration_register'))
+
+    try:
+        course = Course.objects.get(id = course_id)
+    except Course.DoesNotExist:
+        return HttpResponseRedirect(reverse('index'))                
+    
+    quizzes = Quiz.objects.filter(course = course.id)
+    return render_to_response(template_name, context_instance=RequestContext(request, {'quizzes': quizzes, 'course': course}))
+
