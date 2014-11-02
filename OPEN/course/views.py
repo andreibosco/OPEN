@@ -131,7 +131,7 @@ def view_forum(request, course_id, forum_id, template_name):
 @ajax_request
 def add_comment(request, course_id, forum_id):
     """
-        Add a comment in the forum
+    Add a comment in the forum
     """
     if request.is_ajax() and request.POST.get('comment'):
         if request.method == 'POST':
@@ -160,7 +160,7 @@ def add_comment(request, course_id, forum_id):
 @login_required
 def available_course(request, template_name):
     """
-
+    Display list of courses available to the user
     """
     try:
         user = User.objects.get(username = request.user.username)
@@ -169,7 +169,6 @@ def available_course(request, template_name):
     
     user_courses = Grade.objects.filter(user = user).values('course')
     
-    print user_courses
     list_course_ids = [course['course'] for course in user_courses]
     courses = Course.objects.exclude(id__in=list_course_ids)
   
@@ -192,4 +191,29 @@ def course_quiz_list(request, course_id, template_name):
     
     quizzes = Quiz.objects.filter(course = course.id)
     return render_to_response(template_name, context_instance=RequestContext(request, {'quizzes': quizzes, 'course': course}))
+
+@login_required
+@ajax_request
+def add_course(request):
+    """
+    User can add a course
+    """
+    if request.is_ajax() and request.POST.get('course_id'):
+        if request.method == 'POST':
+            try:
+                user = User.objects.get(username = request.user.username)
+            except User.DoesNotExist:
+                return HttpResponseRedirect(reverse('registration_register'))
+
+            course_id = request.POST.get('course_id')
+            
+            try:
+                course = Course.objects.get(id = course_id)
+            except Course.DoesNotExist:
+                return HttpResponse(simplejson.dumps({"status": False}))
+
+            grade = Grade.objects.create(user = user, course = course)
+            return HttpResponse(simplejson.dumps({"status": True, "course_id": course.id}))
+    return HttpResponse(simplejson.dumps({"status": False}))
+        
 

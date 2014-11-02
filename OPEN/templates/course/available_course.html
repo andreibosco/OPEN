@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Available Courses" %}
+{% endblock %}
+
+{% block content %}
+	 <div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
+	    <img src="{{ STATIC_URL }}img/course.jpg" />
+        </div>
+	
+<div class="span6 profileRows">
+	<h2 class="profileHeading">Add Courses<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+        	
+        <ul id="top">
+	{% if courses %}
+	{% for course in courses %}
+	    {% csrf_token %}
+	    <li class="clearfix course" id="course_{{ course.id }}">
+            <div class="span5 pull-left alpha">
+		    <div class="span4 ml0">
+		    	<a href="{% url 'course' course.id %}"><p><strong>{{ course.title }}</strong></p></a>
+		    </div>
+		    <div class="span1 addCourse" id="{{ course.id }}">
+		    	<i class="icon-ok"></i>
+		    </div>
+		    <div style="clear:both;"></div> 		    
+		    <p class="smallText">{{ course.description }}</p>
+            </div>            
+	    <div style="clear:both;"></div> 
+	    <hr>	    
+            </li>
+	{% endfor %}
+	{% else %}
+	<p class="smallText">No new available courses</p>		
+	{% endif %}
+          </ul>  
+ 	
+	<div style="clear:both;"></div> 
+	</div>
+
+{% endblock %}
+
+{% block extra_body %}
+<script type="text/javascript">
+
+$('.addCourse').click(function(e) {
+	var flag = confirm("Do you want to proceed with adding this course?")
+	if (flag){
+	$.ajax({
+        url : "{% url 'add_course' %}",
+        type: "POST",
+        data : {csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+	               course_id: $(this).attr('id'),
+               },
+        dataType : "json",
+        success: function( response ){
+            console.log($("#course_"+response['course_id']));
+            if(response['status']){
+	    	$("#course_"+response['course_id']).hide("slow");
+            }
+	    count = $(".course").size() - $(".course").filter(":hidden").size();
+	    if(count <= 1){
+		document.getElementById('top').innerHTML = '<p>No new available courses</p>'	    
+	    }
+        }
+    });
+	}
+});
+
+</script>
+
+{% endblock %}
