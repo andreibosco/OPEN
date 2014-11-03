@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-{% trans "All User Courses" %}
+{% trans "Quizzes Available" %}
 {% endblock %}
 
 {% block content %}
@@ -10,7 +10,7 @@
         </div>
 
 <div class="span6 profileRows">
-	<h2 class="profileHeading">Video Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	<h2 class="profileHeading">Quizzes for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
 	<ul class="nav nav-tabs ml150" style="border-bottom:None;">
 	  <li class="pull-left"><a href="{% url 'course_pdf_list' course.id %}">PDF</a></li>
 	  <li class="pull-left"><a href="{% url 'course_quiz_list' course.id %}">Quizzes</a></li>
@@ -18,14 +18,14 @@
 	  <li class="pull-left active"><a href="{% url 'course_video_list' course.id %}">Videos</a></li>
 	</ul>
 
-	{% if videos %}	
+	{% if quizzes %}	
         <ul>
-	{% for video in videos %}
+	{% for quiz in quizzes %}
             <li class="clearfix">
             <div class="span5 pull-left alpha">
-		    <a href="{% url 'view_video_file' course.id video.id %}"><p><strong>{{ video.title }}</strong></p></a>
-		    {% if video.description %}
-		    	<p class="smallText">{{ video.description }}</p>
+		    <a href="{% url 'quiz' quiz.id %}"><p><strong>{{ quiz.title }}</strong></p></a>
+		    {% if quiz.description %}
+		    	<p class="smallText">{{ quiz.description }}</p>
 		    {% else %}
 			<p class="smallText">No content found</p>
 		    {% endif %}
@@ -35,7 +35,7 @@
 	{% endfor %}           
           </ul>
 	{% else %}
-	<p>No Videos exist for this course</p>
+	<p>No Quizzes exist for this course</p>
 	{% endif %}
  	
 	<div style="clear:both;"></div> 

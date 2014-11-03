@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Quiz" %}
+{% endblock %}
+
+{% block content %}
+
+
+	<h2 class="profileHeading">{{ quiz.title }}<span class="pull-right"><a href="{% url 'course_quiz_list' quiz.course.id %}" class="Edit"><i class="icon-arrow-left"></i>Back</a></span></h2>
+    
+	<div class="row">
+	<div class="span5">
+	<video width="500" height="400" controls="controls">
+		<source src="{{ quiz.video.uploads.url }}"  type="video/mp4" />
+	</video>
+	</div>
+
+
+	<div class="span4" style="height:500px; margin-left:40px; overflow: auto;" id="quizForm">
+
+	<form enctype="multipart/form-data" method="POST" action="{% url 'quiz' quiz.id %}" class="form-horizontal" name="QuizForm">
+	    {% csrf_token %}
+	    <div class="profileRows">
+
+	    <ul class="ml20"> 
+		<h2 class="profileHeading" style="border-bottom: 0px;">1. Multiple Choice Questions <span class="pull-right"></span></h2> 
+		
+		{% for mcq in mcquestions %}
+		    <li class="clearfix ml10">
+		    <p class="mb10"><strong>Q. {{ mcq.content }}</strong></p>
+			{% for choice in mcq.choice.all %}
+			    <label class="radio">
+				<input type="radio" name="mcquestion_{{ mcq.id }}" id="{{ choice.id }}" value="{{ choice.content }}">{{ choice.content }}
+	    		    </label>
+			{% endfor %}
+		    </li>
+		{% endfor %}
+
+		<h2 class="profileHeading" style="border-bottom: 0px;"></i>2. Likert Scale <span class="pull-right"></span></h2> 
+		
+		{% for l in likert %}
+		    <li class="clearfix ml10">
+		    <p class="mb10"><strong>Q. {{ l.content }}</strong></p>
+	    		<label class="radio inline">
+				<input type="radio" name="likert_{{ l.id }}" id="likert_{{ l.id }}" value="1">1
+	    		</label>
+	    		<label class="radio inline">
+			    <input type="radio" name="likert_{{ l.id }}" id="likert_{{ l.id }}" value="2">2
+	    		</label>
+	    		<label class="radio inline">
+			    <input type="radio" name="likert_{{ l.id }}" id="likert_{{ l.id }}" value="3">3
+	    		</label>
+	    		<label class="radio inline">
+			    <input type="radio" name="likert_{{ l.id }}" id="likert_{{ l.id }}" value="4">4
+	    		</label>
+	    		<label class="radio inline">
+			    <input type="radio" name="likert_{{ l.id }}" id="likert_{{ l.id }}" value="5">5
+	    		</label>
+	    	    </li>
+		{% endfor %}
+
+		<h2 class="profileHeading" style="border-bottom: 0px;">3. Open Ended Questions <span class="pull-right"></span></h2> 
+		
+		{% for o in openended %}
+		    <li class="clearfix ml10">
+		    <p class="mb10"><strong>Q. {{ o }}</strong></p>
+			<textarea name="openended_{{ o.id }}" rows="8" style="width:325px;"></textarea>
+	    	    </li>
+		{% endfor %}
+	
+		<button type="submit" class="btn ml10">Submit</button>
+</ul></div>
+	</form>
+
+</div>
+
+</div>
+
+
+
+  
+  
+{% endblock %}
+
+
+

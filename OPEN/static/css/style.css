@@ -24,10 +24,12 @@
 
 .small-text{font-size:11px; color:#777;}
 
+.mb10 {margin-bottom:10px !important;}
 .mb20 {margin-bottom:20px;}
 .ml80 {margin-left:80px;}
 .ml12 {margin-left:12px;}
 .ml10 {margin-left:10px !important;}
+.ml20 {margin-left:20px !important;}
 .ml0 {margin-left:0px !important;}
 .ml150 {margin-left:150px !important;}
 .ml300 {margin-left:300px;}

@@ -52,6 +52,7 @@ INSTALLED_APPS = (
     'OPEN.account',
     'OPEN.institute',
     'OPEN.course',
+    'OPEN.quiz',
 )
 
 MIDDLEWARE_CLASSES = (
