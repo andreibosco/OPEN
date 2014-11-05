@@ -124,10 +124,12 @@ MEDIA_URL = '/media/'
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/project_static/'
-
+#STATIC_ROOT = '/project_static/'
+STATIC_ROOT = 'staticfiles'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'static'),
+    #os.path.join(os.path.dirname(__file__), 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 TEMPLATE_DIRS = (
