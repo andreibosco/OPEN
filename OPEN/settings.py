@@ -93,14 +93,14 @@ WSGI_APPLICATION = 'OPEN.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
- #       'NAME': 'OPENdb', #os.path.join(BASE_DIR, 'OPENdb'),
-#	'USER': 'zain',
-#	'PASSWORD': '123456',
-#    }
-#}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',#'django.db.backends.mysql',
+        'NAME': 'OPENdb', #os.path.join(BASE_DIR, 'OPENdb'),
+	'USER': 'zain',
+	'PASSWORD': '123456',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
