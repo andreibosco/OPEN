@@ -115,6 +115,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media/')
 
 MEDIA_URL = '/media/'
@@ -124,10 +125,12 @@ MEDIA_URL = '/media/'
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/project_static/'
+STATIC_ROOT = 'staticfiles'
+#STATIC_ROOT = '/project_static/'
 
 STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(__file__), 'static'),
+    #os.path.join(os.path.dirname(__file__), 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 TEMPLATE_DIRS = (
