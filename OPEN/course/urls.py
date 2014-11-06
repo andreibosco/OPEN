@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url( r'^course/add/$', 
         available_course,
         {'template_name': 'course/available_course.html'},
-        name = 'add_course' ),
+        name = 'available_course' ),
         
     url( r'^(?P<course_id>\d+)/$', 
         course,
