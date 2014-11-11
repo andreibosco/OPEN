@@ -10,7 +10,7 @@
         </div>
 
 <div class="span6 profileRows">
-	<h2 class="profileHeading">PDF Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	<h2 class="profileHeading">PDF Files for {{ course.title }}</h2>
 	<ul class="nav nav-tabs ml150" style="border-bottom:None;">
 	  <li class="pull-left active"><a href="{% url 'course_pdf_list' course.id %}">PDF</a></li>
 	  <li class="pull-left"><a href="{% url 'course_quiz_list' course.id %}">Quizzes</a></li>
@@ -31,7 +31,7 @@
 	{% endfor %}           
           </ul>
 	{% else %}
-	<p>No PDFs exist for this course</p>
+	<p class="smallText">No PDFs exist for this course</p>
 	{% endif %}
  	
 	<div style="clear:both;"></div> 

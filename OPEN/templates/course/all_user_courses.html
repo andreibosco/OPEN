@@ -6,8 +6,8 @@
 
 {% block content %}
 <div class="span6 profileRows">
-	<h2 class="profileHeading">{{ request.user.get_full_name }}'s Courses<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
-        	
+	<h2 class="profileHeading">{{ request.user.get_full_name }}'s Courses<span class="pull-right"><a href="{% url 'available_course' %}" class="Edit"><i class="icon-pencil"></i>Add</a></span></h2>
+	{% if grades %} 	
         <ul>
 	{% for grade in grades %}
             <li class="clearfix">
@@ -19,7 +19,9 @@
 	    <hr>
 	{% endfor %}
           </ul>  
- 	
+	  {% else %}
+	<p class="smallText">You have no course added to your list. Click on the Add button to select a course.</p>
+	  {% endif %}
 	<div style="clear:both;"></div> 
 	</div>
 

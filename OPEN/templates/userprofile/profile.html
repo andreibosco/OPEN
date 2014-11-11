@@ -103,7 +103,7 @@
 	</div>
 	 <div class="profileRows">
 		 <h2 class="profileHeading"><i class="course-icon"></i> My Courses <span class="pull-right"><a href="{% url 'available_course' %}" class="Edit"><i class="icon-pencil"></i>Add</a></span></h2> 
-        	
+	{% if grades%}	
 	<ul>
 	    {% for grade in grades %}
             <li class="clearfix">
@@ -115,7 +115,9 @@
             {% endfor %}
             
           </ul>  
-
+	  {% else %}
+	<p class="smallText">You have no course added to your list. Click on the Add button to select a course.</p>
+	  {% endif %}
 	 </div>	
 
 
