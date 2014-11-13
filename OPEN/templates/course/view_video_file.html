@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="span6 profileRows">
-	<h2 class="profileHeading">Video Files for {{ course.title }}<span class="pull-right"><a href="#" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	<h2 class="profileHeading">Video Files for {{ vid.course.title }}<span class="pull-right"><a href="{% url 'course_video_list' vid.course.id %}" class="Edit"><i class="icon-arrow-left"></i>Back</a></span></h2>
 	{% if vid %}	
         <video width="570" height="340" controls="controls">
 		<source src="{{ vid.uploads.url }}"  type="video/mp4" />
