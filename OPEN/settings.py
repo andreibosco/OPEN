@@ -22,7 +22,7 @@ AUTH_PROFILE_MODULE = 'userprofile.userprofile'
 SECRET_KEY = '7+*03gxajb(&a!ls+(qdpnu+c9#0_h@olt6y=tqimc8onp8*9n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -142,8 +142,8 @@ DEFAULT_FROM_EMAIL = ''
 EMAIL_HOST ='smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'davidcooper0488@gmail.com'
-EMAIL_HOST_PASSWORD = 'fstky2e4mdt'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 
 LOGIN_URL = '/'
 
