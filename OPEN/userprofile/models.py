@@ -20,7 +20,7 @@ class UserProfile( TimeStampAwareModel ):
     country = CountryField(_('country'), null = True, blank = True)
     city = models.CharField(_('city'), max_length = 30, null = True, blank = True)
     phone = models.CharField(_('phone number'), max_length = 20, null = True, blank = True)
-    date_of_birth = models.DateField(_('date of birth'), null = True, blank = True)
+    date_of_birth = models.DateField(_('YYYY-MM-DD'), null = True, blank = True)
     website = models.URLField(_('website'), null = True, blank = True)
 
     def __unicode__(self):
