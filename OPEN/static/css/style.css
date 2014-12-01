@@ -24,8 +24,9 @@
 
 .small-text{font-size:11px; color:#777;}
 
+.mb8 {margin-bottom:8px !important;}
 .mb10 {margin-bottom:10px !important;}
-.mb20 {margin-bottom:20px;}
+.mb20 {margin-bottom:20px !important;}
 .ml80 {margin-left:80px;}
 .ml12 {margin-left:12px;}
 .ml10 {margin-left:10px !important;}

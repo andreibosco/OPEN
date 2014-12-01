@@ -48,4 +48,5 @@ urlpatterns += patterns('',
 )
 
 handler404 = 'OPEN.account.views.handler404'
+handler500 = 'OPEN.account.views.handler500'
 

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-{% trans "All User Courses" %}
+{% trans "PDFs Available" %}
 {% endblock %}
 
 {% block content %}
@@ -13,13 +13,19 @@
 	<h2 class="profileHeading">PDF Files for {{ course.title }}</h2>
 	<ul class="nav nav-tabs ml150" style="border-bottom:None;">
 	  <li class="pull-left active"><a href="{% url 'course_pdf_list' course.id %}">PDF</a></li>
-	  <li class="pull-left"><a href="{% url 'course_quiz_list' course.id %}">Quizzes</a></li>
-	  <li class="pull-left"><a href="{% url 'course_forum_list' course.id %}">Forums</a></li>
-	  <li class="pull-left"><a href="{% url 'course_video_list' course.id %}">Videos</a></li>
+	  <li class="pull-left"><a href="{% url 'course_quiz_list' course.id %}">Videos</a></li>
+	  {% comment %}<li class="pull-left"><a href="{% url 'course_forum_list' course.id %}">Forums</a></li>
+	  <li class="pull-left"><a href="{% url 'course_video_list' course.id %}">Videos</a></li>{% endcomment %}
 	</ul>
 
-	{% if pdfs %}	
         <ul>
+			<li class="clearfix">
+            <div class="span5 pull-left alpha">
+		    <a href="{{ STATIC_URL }}ConsentForm.pdf"><p><strong>Consent Form</strong></p></a>
+		    <p class="smallText">This study will generate theoretical knowledge concerning the optimal application of video-based observational practice and educational networking approaches to simulation-based learning. It will also further develop, expand and improve the OPEN system. Finally this will expand our knowledge of simulation-based education and its impact in a distributed health profession education context.</p>
+            </div>
+            </li>
+	    <hr>
 	{% for pdf in pdfs %}
             <li class="clearfix">
             <div class="span5 pull-left alpha">
@@ -30,9 +36,6 @@
 	    <hr>
 	{% endfor %}           
           </ul>
-	{% else %}
-	<p class="smallText">No PDFs exist for this course</p>
-	{% endif %}
  	
 	<div style="clear:both;"></div> 
 	</div>

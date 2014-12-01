@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Feedback" %}
+{% endblock %}
+
+{% block content %}
+	<h2 class="profileHeading">{{ quiz.title }}<span class="pull-right"><a href="{% url 'course_quiz_list' quiz.course.id %}" class="Edit">Next Video<i class="icon-arrow-right"></i></a></span></h2>
+
+    <table class="table table-condensed">
+        <tr>
+            <td style="background-color: #F3F781;">
+                <strong>Congratulations!</strong> You scored {{ score }} out of {{ total_score }} in your attempt. Please find below the feedback. To go to the next video press on Next Video at the top right corner.
+            </td>
+        </tr>
+    </table>
+
+<div class="clearfix"></div>
+
+    <div class="profileRows">
+
+	    <ul class="ml20">
+			{% if mcquestion %}
+		<h2 class="profileHeading" style="border-bottom: 0px;">1. Multiple Choice Questions <span class="pull-right"></span></h2>
+
+		{% for mcq in mcquestion %}
+		    <li class="clearfix ml10" style="margin-bottom:0px;">
+		    <p class="mb10"><strong>Q. {{ mcq.mcquestion.content }}</strong></p>
+                <ul>
+			        {% for choice in mcq.mcquestion.choice.all %}
+                    {% ifequal choice mcq.answer %}
+                        {% if mcq.correct %}
+				            <li class="clearfix mb8" style="display: inline-block; background-color: #A9F5A9;">{{ choice.content }}</li>
+                        {% else %}
+				            <li class="clearfix mb8" style="display: inline-block; background-color: #F5A9A9;">{{ choice.content }}</li>
+                        {% endif %}
+                    {% else %}
+                        <li class="clearfix mb8" >{{ choice.content }}</li>
+                    {% endifequal %}
+			        {% endfor %}
+                </ul>
+		    </li>
+		{% endfor %}
+			{% endif %}
+			{% if likert %}
+		<h2 class="profileHeading" style="border-bottom: 0px;"></i>2. Likert Scale <span class="pull-right"></span></h2>
+
+		{% for l in likert %}
+		    <li class="clearfix ml10">
+		    <p class="mb10"><strong>Q. {{ l.likert.content }}</strong></p>
+                <table class="table table-condensed span3 ml0">
+                    <tr>
+                    {% for i in iterator %}
+                    {% ifequal i l.scale %}
+                        {% if l.correct %}
+				            <td style="background-color: #A9F5A9;">{{ i }}</td>
+                        {% else %}
+				            <td style="background-color: #F5A9A9;">{{ i }}</td>
+                        {% endif %}
+                    {% else %}
+                        <td>{{ i }}</td>
+                    {% endifequal %}
+                    {% endfor %}
+                    </tr>
+                </table>
+                </li>
+		{% endfor %}
+			{% endif %}
+<div class="clearfix"></div>
+                {% if openended %}
+		<h2 class="profileHeading" style="border-bottom: 0px;">3. Open Ended Questions <span class="pull-right"></span></h2>
+
+		{% for o in openended %}
+		    <li class="clearfix ml10">
+		    <p class="mb10"><strong>Q. {{ o.openended.content }}</strong></p>
+			<textarea rows="8" style="width:300px;">{{ o.answer }}</textarea>
+	    	    </li>
+		{% endfor %}
+			{% endif %}
+</ul></div>
+            {% endblock %}

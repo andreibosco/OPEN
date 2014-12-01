@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-{% trans "Quiz" %}
+{% trans "Video" %}
 {% endblock %}
 
 {% block content %}
@@ -11,9 +11,23 @@
     
 	<div class="row">
 	<div class="span5">
-	<video width="500" height="400" controls="controls">
-		<source src="{{ quiz.video.uploads.url }}"  type="video/mp4" />
-	</video>
+		{% comment %}
+		<video width="500" height="400" autoplay="autoplay" style=" background-color: black;">
+			<source src="{{ quiz.video.uploads.url }}"  type="video/mp4" />
+		</video>
+		{% endcomment %}
+		<object width="160" height="144"
+			classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
+			codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+			<param name="src" value="Example.mov">
+			<param name="autoplay" value="true">
+			<param name="controller" value="false">
+
+			<embed src="{{ quiz.video.uploads.url }}" width="500" height="400"
+				autoplay="true" controller="false" controls="0" disablekb="1" fullscreen="0"
+				pluginspage="http://www.apple.com/quicktime/download/">
+			</embed>
+		</object>
 	</div>
 
 
@@ -23,7 +37,8 @@
 	    {% csrf_token %}
 	    <div class="profileRows">
 
-	    <ul class="ml20"> 
+	    <ul class="ml20">
+			{% if mcquestions %}
 		<h2 class="profileHeading" style="border-bottom: 0px;">1. Multiple Choice Questions <span class="pull-right"></span></h2> 
 		
 		{% for mcq in mcquestions %}
@@ -36,7 +51,8 @@
 			{% endfor %}
 		    </li>
 		{% endfor %}
-
+			{% endif %}
+			{% if likert %}
 		<h2 class="profileHeading" style="border-bottom: 0px;"></i>2. Likert Scale <span class="pull-right"></span></h2> 
 		
 		{% for l in likert %}
@@ -59,7 +75,8 @@
 	    		</label>
 	    	    </li>
 		{% endfor %}
-
+			{% endif %}
+			{% if openended %}
 		<h2 class="profileHeading" style="border-bottom: 0px;">3. Open Ended Questions <span class="pull-right"></span></h2> 
 		
 		{% for o in openended %}
@@ -68,20 +85,46 @@
 			<textarea name="openended_{{ o.id }}" rows="8" style="width:300px;"></textarea>
 	    	    </li>
 		{% endfor %}
-	
-		<button type="submit" class="btn ml10">Submit</button>
+			{% endif %}
+			{% if mcquestion or likert or openended %}
+		<button type="submit" class="btn ml10" id="submit">Submit</button>
+			{% else %}
+				<p class="smallText">No questions for this video. Go back and try another video</p>
+			{% endif %}
 </ul></div>
 	</form>
 
 </div>
 
 </div>
-
-
-
-  
-  
 {% endblock %}
 
+{% block extra_body %}
 
+<script type="text/javascript">
+	$('#submit').click(function(event){
 
+ 		var allInputs = $("input:radio");
+ 		var arr = [];
+ 		var flag = true;
+ 		for (var i = 0; i < allInputs.length; i++){
+ 			if ($.inArray(allInputs[i].name, arr) == -1){
+				arr.push(allInputs[i].name);
+			}
+ 		}
+		for (var i = 0; i < arr.length; i++){
+			var s = 'input[name=' + arr[i] + ']:checked';
+			if (!($(s).val())){
+				flag = false;
+				break;
+			}
+		}
+		if (!flag){
+			alert('One or more questions have not been answered. Please complete and then proceed.');
+		}
+		return flag;
+	});
+
+</script>
+
+{% endblock %}

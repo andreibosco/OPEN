@@ -18,7 +18,10 @@ def index (request, template_name):
     Sign in and Sign up functionality handled
     """
     if request.user.is_authenticated():
-        userprofile = request.user.get_profile()
+        try:
+            userprofile = UserProfile.objects.get(user = request.user)
+        except UserProfile.DoesNotExist:
+            return HttpResponseRedirect(reverse('registration_register'))
         grades = Grade.objects.filter(user = userprofile.user).order_by('-date_added')
         return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
     else: 
@@ -32,11 +35,11 @@ def index (request, template_name):
                     if user.is_active:
                         login(request, user)
                         try:
-                            userprofile = user.get_profile()
+                            userprofile = UserProfile.objects.get(user = user)
                         except UserProfile.DoesNotExist:
                             return HttpResponseRedirect(reverse('registration_register'))
-
-                        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': user.get_profile()}))
+                        grades = Grade.objects.filter(user = userprofile.user).order_by('-date_added')
+                        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
                 else:
                     form = AuthenticationForm(None, request.POST)
                     return render_to_response('registration/login.html', context_instance=RequestContext(request, {'form': form}))
@@ -100,4 +103,3 @@ def registration (request, template_name):
             form = UserProfileForm()
             
         return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
-            

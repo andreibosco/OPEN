@@ -76,9 +76,9 @@ class MCQuestion( Question ):
         verbose_name_plural = "multiple choice questions"
 
 
-class Answer( TimeStampAwareModel ):
+class MCQAnswer( TimeStampAwareModel ):
     """
-    Answer model
+    MCQuestion Answer model
     """
     question = models.ForeignKey(MCQuestion)
     correct = models.ForeignKey(Choice)
@@ -88,8 +88,8 @@ class Answer( TimeStampAwareModel ):
 
     class Meta:
         app_label = "quiz"
-        verbose_name = "answer"
-        verbose_name_plural = "answers"
+        verbose_name = "mcq answer"
+        verbose_name_plural = "mcq answers"
 
 
 class Likert( Question ):
@@ -104,6 +104,35 @@ class Likert( Question ):
         app_label = "quiz"
         verbose_name = "likert scale question"
         verbose_name_plural = "likert scale question"
+
+
+class LikertAnswer( TimeStampAwareModel ):
+    """
+    Likert Answer model
+    """
+    SCALE_CHOICES = (
+	    ('', ''),
+        ('0', '0'),
+        ('1', '1'),
+        ('2', '2'),
+        ('3', '3'),
+        ('4', '4'),
+        ('5', '5'),
+    )
+    question = models.ForeignKey(Likert)
+    correct = models.CharField(max_length = 2,
+                                 choices = SCALE_CHOICES,
+                                 blank = True,
+                                 null = True,
+                                 default = '')
+
+    def __unicode__(self):
+        return _("%s") % (self.question.content)
+
+    class Meta:
+        app_label = "quiz"
+        verbose_name = "likert answer"
+        verbose_name_plural = "likert answers"
 
 
 class OpenEnded( Question ):
@@ -133,7 +162,7 @@ class MCQuestionAttempt( TimeStampAwareModel ):
     
     
     def __unicode__(self):
-        return _("%s_%s_%s") % (self.student.get_full_name(), self.mcquestion.quiz, self.no_of_attempt)
+        return _("%s_%s_%s") % (self.student.username, self.mcquestion.quiz, self.no_of_attempt)
 
     class Meta:
         app_label = "quiz"
@@ -157,7 +186,8 @@ class LikertAttempt( TimeStampAwareModel ):
 
     likert = models.ForeignKey(Likert)
     student = models.ForeignKey(User)
-    
+
+    correct = models.NullBooleanField(blank = True, null = True)
     no_of_attempt = models.PositiveIntegerField(default = 1)    
     scale = models.CharField(max_length = 2,
                                  choices = SCALE_CHOICES,
@@ -166,7 +196,7 @@ class LikertAttempt( TimeStampAwareModel ):
                                  default = '')
 
     def __unicode__(self):
-        return _("%s_%s_%s") % (self.student.get_full_name(), self.likert.quiz, self.no_of_attempt)
+        return _("%s_%s_%s") % (self.student.username, self.likert.quiz, self.no_of_attempt)
 
     class Meta:
         app_label = "quiz"

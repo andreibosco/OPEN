@@ -1,10 +1,6 @@
 from django.contrib import admin
 
-from OPEN.quiz.models import Answer, Choice, Likert, MCQuestion, OpenEnded, Quiz, MCQuestionAttempt, LikertAttempt, OpenEndedAttempt 
-
-
-class AnswerAdmin(admin.ModelAdmin):
-    pass
+from OPEN.quiz.models import Choice, Likert, LikertAnswer, MCQAnswer, MCQuestion, OpenEnded, Quiz, MCQuestionAttempt, LikertAttempt, OpenEndedAttempt
 
 
 class ChoiceAdmin(admin.ModelAdmin):
@@ -12,6 +8,14 @@ class ChoiceAdmin(admin.ModelAdmin):
 
 
 class LikertAdmin(admin.ModelAdmin):
+    pass
+
+
+class LikertAnswerAdmin(admin.ModelAdmin):
+    pass
+
+
+class MCQAnswerAdmin(admin.ModelAdmin):
     pass
 
 
@@ -39,9 +43,10 @@ class OpenEndedAttemptAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(Answer, AnswerAdmin)
+admin.site.register(MCQAnswer, MCQAnswerAdmin)
 admin.site.register(Choice, ChoiceAdmin)
 admin.site.register(Likert, LikertAdmin)
+admin.site.register(LikertAnswer, LikertAnswerAdmin)
 admin.site.register(MCQuestion, MCQuestionAdmin)
 admin.site.register(Quiz, QuizAdmin)
 admin.site.register(OpenEnded, OpenEndedAdmin)

@@ -2,11 +2,10 @@
 {% load i18n %}
 {% load thumbnail %}
 {% block title %}
-{{ userprofile.user.get_full_name }}{% trans "'s Profile" %}
+{% trans "My Profile" %}
 {% endblock %}
 {% block content %}
 
-    
  <div class="profile">
  <div class="container">
  	<div class="span8 alpha">
@@ -23,7 +22,7 @@
    	
 
     <div class="span6 profileRows">
-	    <h2 class="profileHeading">{{ userprofile.user.get_full_name }}<span class="pull-right"><a href="{% url 'registration_register' %}" class="Edit"><i class="icon-pencil"></i> Edit</a></span></h2>
+	    <h2 class="profileHeading">My Profile</h2>
         	
             <div class="profileContacts">
             <div class="caption"><strong>Address:</strong></div>
@@ -83,8 +82,6 @@
 	    <div class="details">None</div>
 	    {% endif %}
             </li>
-            
-
             <li>
             <div class="caption"><strong>E-mail:</strong></div>
 	    {% if userprofile.user.email %}
@@ -93,17 +90,14 @@
 	    <div class="details">None</div>
 	    {% endif %}
             </li>
-            
-           
-           
             </ul>
             
 
         <div style="clear:both;"></div> 
 	</div>
 	 <div class="profileRows">
-		 <h2 class="profileHeading"><i class="course-icon"></i> My Courses <span class="pull-right"><a href="{% url 'available_course' %}" class="Edit"><i class="icon-pencil"></i>Add</a></span></h2> 
-	{% if grades%}	
+		 <h2 class="profileHeading"><i class="course-icon"></i> My Courses</h2>
+	{% if grades %}
 	<ul>
 	    {% for grade in grades %}
             <li class="clearfix">

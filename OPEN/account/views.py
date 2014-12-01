@@ -26,3 +26,6 @@ def username_available(request):
 def handler404(request):
     return render(request, '404.html')
 
+def handler500(request):
+    return render(request, '500.html')
+

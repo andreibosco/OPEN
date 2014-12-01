@@ -10,7 +10,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 
 from OPEN.course.models import Course, Forum, Grade, UploadedFile
-from OPEN.quiz.models import Quiz
+from OPEN.quiz.models import MCQuestionAttempt, LikertAttempt, OpenEndedAttempt, Quiz
 
 from annoying.decorators import ajax_request
 from threadedcomments.models import ThreadedComment
@@ -188,8 +188,13 @@ def course_quiz_list(request, course_id, template_name):
         course = Course.objects.get(id = course_id)
     except Course.DoesNotExist:
         return HttpResponseRedirect(reverse('index'))                
-    
-    quizzes = Quiz.objects.filter(course = course.id)
+
+    mcq = MCQuestionAttempt.objects.filter(student = user).values_list('mcquestion__quiz__id')
+    lik = LikertAttempt.objects.filter(student = user).values_list('likert__quiz__id')
+    opended = OpenEndedAttempt.objects.filter(student = user).values_list('openended__quiz__id')
+
+    q_ids = [i[0] for i in mcq] + [i[0] for i in lik] + [i[0] for i in opended]
+    quizzes = Quiz.objects.filter(course = course.id).exclude(id__in = q_ids)
     return render_to_response(template_name, context_instance=RequestContext(request, {'quizzes': quizzes, 'course': course}))
 
 @login_required

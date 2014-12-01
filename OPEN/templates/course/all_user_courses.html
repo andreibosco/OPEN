@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-{% trans "User's Courses" %}
+{% trans "My Courses" %}
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
 	    <img src="{{ STATIC_URL }}img/course.jpg" />
         </div>
 <div class="span6 profileRows">
-	<h2 class="profileHeading">{{ request.user.get_full_name }}'s Courses<span class="pull-right"><a href="{% url 'available_course' %}" class="Edit"><i class="icon-pencil"></i>Add</a></span></h2>
+	<h2 class="profileHeading">My Courses</h2>
 	{% if grades %} 	
         <ul>
 	{% for grade in grades %}
