@@ -144,6 +144,7 @@ def quiz_result(request, quiz_id, template_name):
         total_score = total_score + 1
 
     iterator = ['1','2','3','4','5']
+
     data = {
         'quiz': quiz,
         'mcquestion': mcquestion,
