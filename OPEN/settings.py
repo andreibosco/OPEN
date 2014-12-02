@@ -49,6 +49,7 @@ INSTALLED_APPS = (
     'threadedcomments',
     'django.contrib.comments',
     'sorl.thumbnail',
+    'storages',
 
     #my apps
     'OPEN.userprofile',
@@ -150,3 +151,10 @@ LOGIN_URL = '/'
 COMMENTS_APP = 'threadedcomments'
 
 SITE_ID = 1
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+AWS_ACCESS_KEY_ID = 'AKIAJNNPHXOC5N3XEOJQ'
+AWS_SECRET_ACCESS_KEY = 'Iy5fiRy47s/lmgTAqWPZ1mjhLUUSZ9aJEuwavZgH'
+AWS_STORAGE_BUCKET_NAME = 'openkids'
+AWS_QUERYSTRING_AUTH = False
+MEDIA_URL = 'http://%s.s3.amazonaws.com/your-folder/' % AWS_STORAGE_BUCKET_NAME
