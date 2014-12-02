@@ -7,10 +7,24 @@
 {% block content %}
 <div class="span6 profileRows">
 	<h2 class="profileHeading">Video Files for {{ vid.course.title }}<span class="pull-right"><a href="{% url 'course_video_list' vid.course.id %}" class="Edit"><i class="icon-arrow-left"></i>Back</a></span></h2>
-	{% if vid %}	
+	{% if vid %}
+	{% comment %}
         <video width="570" height="340" controls="controls">
 		<source src="{{ vid.uploads.url }}"  type="video/mp4" />
 	</video>
+	{% endcomment %}
+	<object width="160" height="144"
+			classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
+			codebase="http://www.apple.com/qtactivex/qtplugin.cab">
+			<param name="src" value="Example.mov">
+			<param name="autoplay" value="true">
+			<param name="controller" value="false">
+
+			<embed src="{{ vid.uploads.url }}" width="500" height="400"
+				autoplay="true" controller="false" controls="0" disablekb="1" fullscreen="0"
+				pluginspage="http://www.apple.com/quicktime/download/">
+			</embed>
+		</object>
 	{% else %}
 	<p>No Videos exist for this course</p>
 	{% endif %}
