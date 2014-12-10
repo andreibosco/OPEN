@@ -22,7 +22,7 @@ AUTH_PROFILE_MODULE = 'userprofile.userprofile'
 SECRET_KEY = '7+*03gxajb(&a!ls+(qdpnu+c9#0_h@olt6y=tqimc8onp8*9n'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
