@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'OPEN.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',#'django.db.backends.mysql',
-        'NAME': 'OPENdb', #os.path.join(BASE_DIR, 'OPENdb'),
+        'NAME': 'OPENdatabase', #os.path.join(BASE_DIR, 'OPENdb'),
 	'USER': 'zain',
 	'PASSWORD': '123456',
     }
