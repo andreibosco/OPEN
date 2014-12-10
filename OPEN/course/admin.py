@@ -20,6 +20,6 @@ class UploadedFileAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Course, CourseAdmin)
-admin.site.register(Forum, ForumAdmin)
+#admin.site.register(Forum, ForumAdmin)
 admin.site.register(Grade, GradeAdmin)
 admin.site.register(UploadedFile, UploadedFileAdmin)

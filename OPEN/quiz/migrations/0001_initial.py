@@ -59,8 +59,8 @@ class Migration(SchemaMigration):
         ))
         db.create_unique(m2m_table_name, ['mcquestion_id', 'choice_id'])
 
-        # Adding model 'Answer'
-        db.create_table(u'quiz_answer', (
+        # Adding model 'MCQAnswer'
+        db.create_table(u'quiz_mcqanswer', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
@@ -68,13 +68,24 @@ class Migration(SchemaMigration):
             ('question', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quiz.MCQuestion'])),
             ('correct', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quiz.Choice'])),
         ))
-        db.send_create_signal('quiz', ['Answer'])
+        db.send_create_signal('quiz', ['MCQAnswer'])
 
         # Adding model 'Likert'
         db.create_table(u'quiz_likert', (
             (u'question_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['quiz.Question'], unique=True, primary_key=True)),
         ))
         db.send_create_signal('quiz', ['Likert'])
+
+        # Adding model 'LikertAnswer'
+        db.create_table(u'quiz_likertanswer', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('question', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quiz.Likert'])),
+            ('correct', self.gf('django.db.models.fields.CharField')(default='', max_length=2, null=True, blank=True)),
+        ))
+        db.send_create_signal('quiz', ['LikertAnswer'])
 
         # Adding model 'OpenEnded'
         db.create_table(u'quiz_openended', (
@@ -88,9 +99,9 @@ class Migration(SchemaMigration):
             ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('answer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quiz.Choice'])),
             ('mcquestion', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quiz.MCQuestion'])),
             ('student', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('answer', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('correct', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
             ('no_of_attempt', self.gf('django.db.models.fields.PositiveIntegerField')(default=1)),
         ))
@@ -104,6 +115,7 @@ class Migration(SchemaMigration):
             ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('likert', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['quiz.Likert'])),
             ('student', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('correct', self.gf('django.db.models.fields.NullBooleanField')(null=True, blank=True)),
             ('no_of_attempt', self.gf('django.db.models.fields.PositiveIntegerField')(default=1)),
             ('scale', self.gf('django.db.models.fields.CharField')(default='', max_length=2, null=True, blank=True)),
         ))
@@ -139,11 +151,14 @@ class Migration(SchemaMigration):
         # Removing M2M table for field choice on 'MCQuestion'
         db.delete_table(db.shorten_name(u'quiz_mcquestion_choice'))
 
-        # Deleting model 'Answer'
-        db.delete_table(u'quiz_answer')
+        # Deleting model 'MCQAnswer'
+        db.delete_table(u'quiz_mcqanswer')
 
         # Deleting model 'Likert'
         db.delete_table(u'quiz_likert')
+
+        # Deleting model 'LikertAnswer'
+        db.delete_table(u'quiz_likertanswer')
 
         # Deleting model 'OpenEnded'
         db.delete_table(u'quiz_openended')
@@ -232,15 +247,6 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'user': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'})
         },
-        'quiz.answer': {
-            'Meta': {'object_name': 'Answer'},
-            'correct': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['quiz.Choice']"}),
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['quiz.MCQuestion']"})
-        },
         'quiz.choice': {
             'Meta': {'object_name': 'Choice'},
             'content': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -253,8 +259,18 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Likert', '_ormbases': ['quiz.Question']},
             u'question_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['quiz.Question']", 'unique': 'True', 'primary_key': 'True'})
         },
+        'quiz.likertanswer': {
+            'Meta': {'object_name': 'LikertAnswer'},
+            'correct': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2', 'null': 'True', 'blank': 'True'}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['quiz.Likert']"})
+        },
         'quiz.likertattempt': {
             'Meta': {'object_name': 'LikertAttempt'},
+            'correct': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
@@ -264,6 +280,15 @@ class Migration(SchemaMigration):
             'scale': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2', 'null': 'True', 'blank': 'True'}),
             'student': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
+        'quiz.mcqanswer': {
+            'Meta': {'object_name': 'MCQAnswer'},
+            'correct': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['quiz.Choice']"}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['quiz.MCQuestion']"})
+        },
         'quiz.mcquestion': {
             'Meta': {'object_name': 'MCQuestion', '_ormbases': ['quiz.Question']},
             'choice': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['quiz.Choice']", 'symmetrical': 'False'}),
@@ -271,7 +296,7 @@ class Migration(SchemaMigration):
         },
         'quiz.mcquestionattempt': {
             'Meta': {'object_name': 'MCQuestionAttempt'},
-            'answer': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'answer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['quiz.Choice']"}),
             'correct': ('django.db.models.fields.NullBooleanField', [], {'null': 'True', 'blank': 'True'}),
             'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),

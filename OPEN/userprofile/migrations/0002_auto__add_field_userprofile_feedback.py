@@ -8,24 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'UploadedFile'
-        db.create_table(u'course_uploadedfile', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('uploader', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['course.Course'])),
-            ('uploads', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-        ))
-        db.send_create_signal(u'course', ['UploadedFile'])
+        # Adding field 'UserProfile.feedback'
+        db.add_column(u'userprofile_userprofile', 'feedback',
+                      self.gf('django.db.models.fields.BooleanField')(default=1),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting model 'UploadedFile'
-        db.delete_table(u'course_uploadedfile')
+        # Deleting field 'UserProfile.feedback'
+        db.delete_column(u'userprofile_userprofile', 'feedback')
 
 
     models = {
@@ -65,42 +56,22 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'course.course': {
-            'Meta': {'object_name': 'Course'},
-            'code': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
+        'userprofile.userprofile': {
+            'Meta': {'object_name': 'UserProfile'},
+            'address': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
+            'country': ('django_countries.fields.CountryField', [], {'max_length': '2', 'null': 'True', 'blank': 'True'}),
             'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            'end_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'date_of_birth': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'feedback': ('django.db.models.fields.BooleanField', [], {}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['institute.Institute']"}),
-            'start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        u'course.uploadedfile': {
-            'Meta': {'object_name': 'UploadedFile'},
-            'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['course.Course']"}),
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'uploader': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'uploads': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'})
-        },
-        'institute.institute': {
-            'Meta': {'object_name': 'Institute'},
-            'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
-            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'user': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'})
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
         }
     }
 
-    complete_apps = ['course']
+    complete_apps = ['userprofile']

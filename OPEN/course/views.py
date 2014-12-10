@@ -37,7 +37,7 @@ def all_user_courses(request, template_name):
     except User.DoesNotExist:
         return HttpResponseRedirect(reverse('registration_register'))
     
-    grades = Grade.objects.filter(user = user).order_by('-date_added')
+    grades = Grade.objects.filter(student = user).order_by('-date_added')
 
     return render_to_response(template_name, context_instance=RequestContext(request, {'grades': grades}))
 
@@ -167,7 +167,7 @@ def available_course(request, template_name):
     except User.DoesNotExist:
         return HttpResponseRedirect(reverse('registration_register'))
     
-    user_courses = Grade.objects.filter(user = user).values('course')
+    user_courses = Grade.objects.filter(student = user).values('course')
     
     list_course_ids = [course['course'] for course in user_courses]
     courses = Course.objects.exclude(id__in=list_course_ids)
@@ -217,7 +217,7 @@ def add_course(request):
             except Course.DoesNotExist:
                 return HttpResponse(simplejson.dumps({"status": False}))
 
-            grade = Grade.objects.create(user = user, course = course)
+            grade = Grade.objects.create(student = user, course = course)
             return HttpResponse(simplejson.dumps({"status": True, "course_id": course.id}))
     return HttpResponse(simplejson.dumps({"status": False}))
         

@@ -22,8 +22,8 @@ class Institute( TimeStampAwareModel ):
 
     class Meta:
         app_label = "institute"
-        verbose_name = "institute"
-        verbose_name_plural = "institutes"
+        verbose_name = "university"
+        verbose_name_plural = "universities"
 
 
 class Discipline( TimeStampAwareModel ):

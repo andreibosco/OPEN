@@ -8,14 +8,24 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Deleting field 'Grade.user'
+        db.delete_column(u'course_grade', 'user_id')
 
-        # Changing field 'Grade.grade'
-        db.alter_column(u'course_grade', 'grade', self.gf('django.db.models.fields.CharField')(max_length=2, null=True))
+        # Adding field 'Grade.student'
+        db.add_column(u'course_grade', 'student',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['auth.User']),
+                      keep_default=False)
+
 
     def backwards(self, orm):
+        # Adding field 'Grade.user'
+        db.add_column(u'course_grade', 'user',
+                      self.gf('django.db.models.fields.related.ForeignKey')(default=1, to=orm['auth.User']),
+                      keep_default=False)
 
-        # Changing field 'Grade.grade'
-        db.alter_column(u'course_grade', 'grade', self.gf('django.db.models.fields.CharField')(max_length=2))
+        # Deleting field 'Grade.student'
+        db.delete_column(u'course_grade', 'student_id')
+
 
     models = {
         u'auth.group': {
@@ -86,7 +96,7 @@ class Migration(SchemaMigration):
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'grade': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+            'student': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         u'course.uploadedfile': {
             'Meta': {'object_name': 'UploadedFile'},

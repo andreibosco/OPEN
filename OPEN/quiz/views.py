@@ -19,6 +19,7 @@ def quiz(request, quiz_id, template_name):
         return HttpResponseRedirect(reverse('index'))        
 
     if request.method == "POST":
+        flag = False
         for key, value in request.POST.iteritems():
             try:
                 q_type = key.split('_')[0]
@@ -42,6 +43,8 @@ def quiz(request, quiz_id, template_name):
                     correct_answer = MCQAnswer.objects.get(question = mcquestion)
                 except MCQAnswer.DoesNotExist:
                     correct_answer = None
+                if correct_answer:
+                    flag = True
 
                 no_of_attempt = MCQuestionAttempt.objects.filter(mcquestion = mcquestion, student = request.user).aggregate(Max('no_of_attempt'))
                 
@@ -66,6 +69,8 @@ def quiz(request, quiz_id, template_name):
                     correct_answer = LikertAnswer.objects.get(question = likert)
                 except LikertAnswer.DoesNotExist:
                     correct_answer = None
+                if correct_answer:
+                    flag = True
 
                 no_of_attempt = LikertAttempt.objects.filter(likert = likert, student = request.user).aggregate(Max('no_of_attempt'))                
 
@@ -95,8 +100,10 @@ def quiz(request, quiz_id, template_name):
                     if no_of_attempt['no_of_attempt__max']:
                         attempt.no_of_attempt = no_of_attempt['no_of_attempt__max'] + 1
                     attempt.save()
-
-        return HttpResponseRedirect(reverse('quiz_result', args=[quiz.course.id]))
+        if flag and request.user.get_profile().feedback:
+            return HttpResponseRedirect(reverse('quiz_result', args=[quiz.course.id]))
+        else:
+            return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
 
     else:
         mcquestions = MCQuestion.objects.filter(quiz = quiz)

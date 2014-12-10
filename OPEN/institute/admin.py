@@ -15,7 +15,7 @@ class SubDisciplineAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(Institute, InstituteAdmin)
-admin.site.register(Discipline, DisciplineAdmin)
-admin.site.register(SubDiscipline, SubDisciplineAdmin)
+#admin.site.register(Discipline, DisciplineAdmin)
+#admin.site.register(SubDiscipline, SubDisciplineAdmin)
 
 

@@ -15,7 +15,7 @@ class Migration(SchemaMigration):
             ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('institute', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['institute.Institute'])),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('code', self.gf('django.db.models.fields.CharField')(max_length=30)),
             ('start_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
@@ -31,23 +31,37 @@ class Migration(SchemaMigration):
             ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['course.Course'])),
-            ('grade', self.gf('django.db.models.fields.CharField')(default='', max_length=2)),
+            ('grade', self.gf('django.db.models.fields.CharField')(default='', max_length=2, null=True, blank=True)),
         ))
-        db.send_create_signal(u'course', ['Grade'])
+        db.send_create_signal('course', ['Grade'])
 
-        # Adding model 'Video'
-        db.create_table(u'course_video', (
+        # Adding model 'UploadedFile'
+        db.create_table(u'course_uploadedfile', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('uploader', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['course.Course'])),
-            ('video', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
+            ('uploads', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
+            ('file_type', self.gf('django.db.models.fields.CharField')(default='', max_length=3)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('description', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
         ))
-        db.send_create_signal(u'course', ['Video'])
+        db.send_create_signal(u'course', ['UploadedFile'])
+
+        # Adding model 'Forum'
+        db.create_table(u'course_forum', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('date_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('date_deleted', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('course', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['course.Course'])),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('uploads', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['course.UploadedFile'])),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=300)),
+        ))
+        db.send_create_signal(u'course', ['Forum'])
 
 
     def backwards(self, orm):
@@ -57,8 +71,11 @@ class Migration(SchemaMigration):
         # Deleting model 'Grade'
         db.delete_table(u'course_grade')
 
-        # Deleting model 'Video'
-        db.delete_table(u'course_video')
+        # Deleting model 'UploadedFile'
+        db.delete_table(u'course_uploadedfile')
+
+        # Deleting model 'Forum'
+        db.delete_table(u'course_forum')
 
 
     models = {
@@ -109,29 +126,41 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'institute': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['institute.Institute']"}),
             'start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '30'})
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        u'course.grade': {
+        u'course.forum': {
+            'Meta': {'object_name': 'Forum'},
+            'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['course.Course']"}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '300'}),
+            'uploads': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['course.UploadedFile']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+        },
+        'course.grade': {
             'Meta': {'object_name': 'Grade'},
             'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['course.Course']"}),
             'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'grade': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2'}),
+            'grade': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '2', 'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
-        u'course.video': {
-            'Meta': {'object_name': 'Video'},
+        u'course.uploadedfile': {
+            'Meta': {'object_name': 'UploadedFile'},
             'course': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['course.Course']"}),
             'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'date_deleted': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'date_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'file_type': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '3'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'uploader': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
-            'video': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'})
+            'uploads': ('django.db.models.fields.files.FileField', [], {'max_length': '100', 'blank': 'True'})
         },
         'institute.institute': {
             'Meta': {'object_name': 'Institute'},

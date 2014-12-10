@@ -43,7 +43,7 @@ class Grade( TimeStampAwareModel ):
         ('F', 'F'),
     )
 
-    user = models.ForeignKey(User)
+    student = models.ForeignKey(User)
     course = models.ForeignKey(Course)
     
     grade = models.CharField(max_length = 2,
@@ -53,13 +53,13 @@ class Grade( TimeStampAwareModel ):
                                  default = '')
 
     def __unicode__(self):
-        return _("%s_%s") % (self.user, self.course)
+        return _("%s_%s") % (self.student, self.course)
 
 
     class Meta:
         app_label = "course"
-        verbose_name = "grade"
-        verbose_name_plural = "grades"
+        verbose_name = "student course"
+        verbose_name_plural = "student courses"
 
 
 class UploadedFile( TimeStampAwareModel ):

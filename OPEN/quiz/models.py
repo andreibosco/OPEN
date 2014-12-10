@@ -88,8 +88,8 @@ class MCQAnswer( TimeStampAwareModel ):
 
     class Meta:
         app_label = "quiz"
-        verbose_name = "mcq answer"
-        verbose_name_plural = "mcq answers"
+        verbose_name = "MCQ answer"
+        verbose_name_plural = "MCQ answers"
 
 
 class Likert( Question ):

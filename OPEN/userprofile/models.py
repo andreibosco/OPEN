@@ -22,9 +22,10 @@ class UserProfile( TimeStampAwareModel ):
     phone = models.CharField(_('phone number'), max_length = 20, null = True, blank = True)
     date_of_birth = models.DateField(_('YYYY-MM-DD'), null = True, blank = True)
     website = models.URLField(_('website'), null = True, blank = True)
+    feedback = models.BooleanField(_('give feedback'), default = False)
 
     def __unicode__(self):
-        return _("%s") % self.user.get_full_name()
+        return _("%s") % self.user.username
 
     def is_authenticated(self):
         return self.user.is_authenticated()
