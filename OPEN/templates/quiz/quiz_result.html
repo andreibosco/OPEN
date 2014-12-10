@@ -21,7 +21,7 @@
 
 	    <ul class="ml20">
 			{% if mcquestion %}
-		<h2 class="profileHeading" style="border-bottom: 0px;">1. Multiple Choice Questions <span class="pull-right"></span></h2>
+		<h2 class="profileHeading" style="border-bottom: 0px;">1. Checklist <span class="pull-right"></span></h2>
 
 		{% for mcq in mcquestion %}
 		    <li class="clearfix ml10" style="margin-bottom:0px;">
@@ -32,7 +32,11 @@
                         {% if mcq.correct %}
 				            <li class="clearfix mb8" style="display: inline-block; background-color: #A9F5A9;">{{ choice.content }}</li>
                         {% else %}
-				            <li class="clearfix mb8" style="display: inline-block; background-color: #F5A9A9;">{{ choice.content }}</li>
+                            {% ifequal mcq.correct 0 %}
+				                <li class="clearfix mb8" style="display: inline-block; background-color: #F5A9A9;">{{ choice.content }}</li>
+                            {% else %}
+                                <li class="clearfix mb8" >{{ choice.content }}</li>
+                            {% endifequal %}
                         {% endif %}
                     {% else %}
                         <li class="clearfix mb8" >{{ choice.content }}</li>
@@ -43,7 +47,7 @@
 		{% endfor %}
 			{% endif %}
 			{% if likert %}
-		<h2 class="profileHeading" style="border-bottom: 0px;"></i>2. Likert Scale <span class="pull-right"></span></h2>
+		<h2 class="profileHeading" style="border-bottom: 0px;"></i>2. Global Rating Scale <span class="pull-right"></span></h2>
 
 		{% for l in likert %}
 		    <li class="clearfix ml10">
@@ -52,11 +56,15 @@
                     <tr>
                     {% for i in iterator %}
                     {% ifequal i l.scale %}
-                        {% if l.correct %}
+                        {% ifequal l.correct 1 %}
 				            <td style="background-color: #A9F5A9;">{{ i }}</td>
                         {% else %}
-				            <td style="background-color: #F5A9A9;">{{ i }}</td>
-                        {% endif %}
+                            {% ifequal  l.correct 0 %}
+    				            <td style="background-color: #F5A9A9;">{{ i }}</td>
+                            {% else %}
+    				            <td>{{ i }}</td>
+                            {% endifequal %}
+                        {% endifequal %}
                     {% else %}
                         <td>{{ i }}</td>
                     {% endifequal %}
