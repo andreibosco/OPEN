@@ -1,9 +1,12 @@
+import xlwt
+
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Max
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils import simplejson
 
 from OPEN.quiz.models import Choice, Likert, LikertAttempt, LikertAnswer, MCQuestion, MCQAnswer, MCQuestionAttempt, OpenEnded, OpenEndedAttempt, Quiz
 
@@ -101,7 +104,7 @@ def quiz(request, quiz_id, template_name):
                         attempt.no_of_attempt = no_of_attempt['no_of_attempt__max'] + 1
                     attempt.save()
         if flag and request.user.get_profile().feedback:
-            return HttpResponseRedirect(reverse('quiz_result', args=[quiz.course.id]))
+            return HttpResponseRedirect(reverse('quiz_result', args=[quiz.id]))
         else:
             return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
 
@@ -124,7 +127,7 @@ def quiz_result(request, quiz_id, template_name):
     Quiz Summary
     """
     try:
-        quiz = Quiz.objects.get(id = '1')
+        quiz = Quiz.objects.get(id = quiz_id)
     except Quiz.DoesNotExist:
         return HttpResponseRedirect(reverse('index'))
 
@@ -138,17 +141,16 @@ def quiz_result(request, quiz_id, template_name):
     likert = LikertAttempt.objects.filter(likert__quiz = quiz, student = request.user, no_of_attempt = no_of_attempt)
     openended = OpenEndedAttempt.objects.filter(openended__quiz = quiz, student = request.user, no_of_attempt = no_of_attempt)
 
-    score = 0
-    total_score = 0
-    for mcq in mcquestion:
-        if mcq.correct:
-            score = score + 1
-        total_score = total_score + 1
+    mcq_count = MCQuestionAttempt.objects.filter(student = request.user).values('mcquestion__quiz').distinct().count()
+    likert_count = LikertAttempt.objects.filter(student = request.user).values('likert__quiz').distinct().count()
 
-    for l in likert:
-        if l.correct:
-            score = score + 1
-        total_score = total_score + 1
+    total = mcq_count + likert_count
+    if total > 0 and total <= 2:
+        top = 50
+    elif total > 2 and total <= 10:
+        top = 75
+    elif total > 10:
+        top = 90
 
     iterator = ['1','2','3','4','5']
 
@@ -158,8 +160,83 @@ def quiz_result(request, quiz_id, template_name):
         'likert': likert,
         'openended': openended,
         'iterator': iterator,
-        'score': score,
-        'total_score': total_score,
+        'top': top,
     }
     return render_to_response(template_name, context_instance=RequestContext(request, data))
 
+def get_data(request):
+    """
+    Create an excel file with Questions and average score
+    """
+    response = HttpResponse(mimetype="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename="open.xls"'
+    workbook = xlwt.Workbook()
+    workbook = create_sheet(workbook, 'checklist')
+    workbook = create_sheet(workbook, 'grs')
+
+    workbook.save(response)
+    return response
+
+def create_sheet(workbook, sheet_type):
+    """
+    Create a excel sheet for Checklist and GRS
+    """
+    style = xlwt.easyxf('font: bold 1')
+    if sheet_type == 'checklist':
+        checklist = workbook.add_sheet("Checklist")
+        checklist.write(0,0, 'Checklist (0 = No, 1 = Yes)', style)
+        checklist.write(0,1, 'Score', style)
+        questions = MCQuestion.objects.all()
+        i = 1
+        for question in questions:
+            attempts = MCQuestionAttempt.objects.filter(mcquestion = question)
+            checklist.write(i, 0, question.content)
+            yes_count = 0
+            no_count = 0
+            for attempt in attempts:
+                if attempt.answer.content == 'Yes':
+                    yes_count = yes_count + 1
+                elif attempt.answer.content == 'No':
+                    no_count = no_count + 1
+            if yes_count > no_count:
+                checklist.write(i, 1, 1)
+            elif yes_count < no_count:
+                checklist.write(i, 1, 0)
+            else:
+                checklist.write(i, 1, 'equal')
+
+            i = i + 1
+    else:
+        grs = workbook.add_sheet("GRS")
+        grs.write(0,0, 'GRS (score of 1 to 5)', style)
+        grs.write(0,1, 'Score', style)
+        questions = Likert.objects.all()
+        i = 1
+        for question in questions:
+            attempts = LikertAttempt.objects.filter(likert = question)
+            grs.write(i, 0, question.content)
+            zero = 0
+            one = 0
+            two = 0
+            three = 0
+            four = 0
+            five = 0
+            for attempt in attempts:
+                if attempt.scale == '0':
+                    zero = zero + 1
+                elif attempt.scale == '1':
+                    one = one + 1
+                elif attempt.scale == '2':
+                    two = two + 1
+                elif attempt.scale == '3':
+                    three = three + 1
+                elif attempt.scale == '4':
+                    four = four + 1
+                elif attempt.scale == '5':
+                    five = five + 1
+
+            d = {'0': zero, '1': one, '2': two, '3': three, '4': four, '5': five}
+            maxx = max(d.values())
+            keys = [x + ' ' for x,y in d.items() if y ==maxx]
+            grs.write(i, 1, keys)
+    return workbook

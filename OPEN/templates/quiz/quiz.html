@@ -5,8 +5,6 @@
 {% endblock %}
 
 {% block content %}
-
-
 	<h2 class="profileHeading">{{ quiz.title }}<span class="pull-right"><a href="{% url 'course_quiz_list' quiz.course.id %}" class="Edit"><i class="icon-arrow-left"></i>Back</a></span></h2>
     
 	<div class="row">
@@ -86,7 +84,8 @@
 	    	    </li>
 		{% endfor %}
 			{% endif %}
-			{% if mcquestion or likert or openended %}
+
+			{% if mcquestions or likert or openended %}
 		<button type="submit" class="btn ml10" id="submit">Submit</button>
 			{% else %}
 				<p class="smallText">No questions for this video. Go back and try another video</p>
@@ -126,5 +125,4 @@
 	});
 
 </script>
-
 {% endblock %}
