@@ -239,4 +239,6 @@ def create_sheet(workbook, sheet_type):
             maxx = max(d.values())
             keys = [x + ' ' for x,y in d.items() if y ==maxx]
             grs.write(i, 1, keys)
+
+            i = i + 1
     return workbook
