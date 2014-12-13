@@ -188,57 +188,62 @@ def create_sheet(workbook, sheet_type):
         checklist.write(0,1, 'Score', style)
         questions = MCQuestion.objects.all()
         i = 1
+        done = []
         for question in questions:
-            attempts = MCQuestionAttempt.objects.filter(mcquestion = question)
-            checklist.write(i, 0, question.content)
-            yes_count = 0
-            no_count = 0
-            for attempt in attempts:
-                if attempt.answer.content == 'Yes':
-                    yes_count = yes_count + 1
-                elif attempt.answer.content == 'No':
-                    no_count = no_count + 1
-            if yes_count > no_count:
-                checklist.write(i, 1, 1)
-            elif yes_count < no_count:
-                checklist.write(i, 1, 0)
-            else:
-                checklist.write(i, 1, 'equal')
-
-            i = i + 1
+            if question not in done:
+                attempts = MCQuestionAttempt.objects.filter(mcquestion = question)
+                checklist.write(i, 0, question.content)
+                yes_count = 0
+                no_count = 0
+                for attempt in attempts:
+                    if attempt.answer.content == 'Yes':
+                        yes_count = yes_count + 1
+                    elif attempt.answer.content == 'No':
+                        no_count = no_count + 1
+                if yes_count > no_count:
+                    checklist.write(i, 1, 1)
+                elif yes_count < no_count:
+                    checklist.write(i, 1, 0)
+                else:
+                    checklist.write(i, 1, 'equal')
+                i = i + 1
+                done.append(question)
     else:
         grs = workbook.add_sheet("GRS")
         grs.write(0,0, 'GRS (score of 1 to 5)', style)
         grs.write(0,1, 'Score', style)
         questions = Likert.objects.all()
         i = 1
+        done = []
         for question in questions:
-            attempts = LikertAttempt.objects.filter(likert = question)
-            grs.write(i, 0, question.content)
-            zero = 0
-            one = 0
-            two = 0
-            three = 0
-            four = 0
-            five = 0
-            for attempt in attempts:
-                if attempt.scale == '0':
-                    zero = zero + 1
-                elif attempt.scale == '1':
-                    one = one + 1
-                elif attempt.scale == '2':
-                    two = two + 1
-                elif attempt.scale == '3':
-                    three = three + 1
-                elif attempt.scale == '4':
-                    four = four + 1
-                elif attempt.scale == '5':
-                    five = five + 1
+            if question not in done:
+                attempts = LikertAttempt.objects.filter(likert = question)
+                grs.write(i, 0, question.content)
+                zero = 0
+                one = 0
+                two = 0
+                three = 0
+                four = 0
+                five = 0
+                for attempt in attempts:
+                    if attempt.scale == '0':
+                        zero = zero + 1
+                    elif attempt.scale == '1':
+                        one = one + 1
+                    elif attempt.scale == '2':
+                        two = two + 1
+                    elif attempt.scale == '3':
+                        three = three + 1
+                    elif attempt.scale == '4':
+                        four = four + 1
+                    elif attempt.scale == '5':
+                        five = five + 1
 
-            d = {'0': zero, '1': one, '2': two, '3': three, '4': four, '5': five}
-            maxx = max(d.values())
-            keys = [x + ' ' for x,y in d.items() if y ==maxx]
-            grs.write(i, 1, keys)
+                d = {'0': zero, '1': one, '2': two, '3': three, '4': four, '5': five}
+                maxx = max(d.values())
+                keys = [x + ' ' for x,y in d.items() if y ==maxx]
+                grs.write(i, 1, keys)
 
-            i = i + 1
+                i = i + 1
+                done.append(question)
     return workbook
