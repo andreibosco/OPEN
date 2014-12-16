@@ -8,6 +8,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
+from OPEN.course.models import UploadedFile
 from OPEN.quiz.models import Choice, Likert, LikertAttempt, LikertAnswer, MCQuestion, MCQAnswer, MCQuestionAttempt, OpenEnded, OpenEndedAttempt, Quiz
 
 
@@ -171,13 +172,14 @@ def get_data(request):
     response = HttpResponse(mimetype="application/ms-excel")
     response['Content-Disposition'] = 'attachment; filename="open.xls"'
     workbook = xlwt.Workbook()
-    from OPEN.course.models import UploadedFile
     videos = UploadedFile.objects.filter(file_type='VID')
     for video in videos:
         mcquestions = MCQuestionAttempt.objects.filter(mcquestion__quiz__video = video)
         likert = LikertAttempt.objects.filter(likert__quiz__video = video)
         workbook = create_sheet(workbook, mcquestions, likert, video.title)
-
+    if not videos:
+        sheet = workbook.add_sheet("Empty")
+        sheet.write(0, 0, 'No data available')
     workbook.save(response)
     return response
 
