@@ -171,61 +171,64 @@ def get_data(request):
     response = HttpResponse(mimetype="application/ms-excel")
     response['Content-Disposition'] = 'attachment; filename="open.xls"'
     workbook = xlwt.Workbook()
-    workbook = create_sheet(workbook, 'checklist')
-    workbook = create_sheet(workbook, 'grs')
+    from OPEN.course.models import UploadedFile
+    videos = UploadedFile.objects.filter(file_type='VID')
+    for video in videos:
+        mcquestions = MCQuestionAttempt.objects.filter(mcquestion__quiz__video = video)
+        likert = LikertAttempt.objects.filter(likert__quiz__video = video)
+        workbook = create_sheet(workbook, mcquestions, likert, video.title)
 
     workbook.save(response)
     return response
 
-def create_sheet(workbook, sheet_type):
+def create_sheet(workbook, mcqs, likert, video_title):
     """
     Create a excel sheet for Checklist and GRS
     """
+    checklist = workbook.add_sheet(video_title)
     style = xlwt.easyxf('font: bold 1')
-    if sheet_type == 'checklist':
-        checklist = workbook.add_sheet("Checklist")
-        checklist.write(0,0, 'Checklist (0 = No, 1 = Yes)', style)
-        checklist.write(0,1, 'Score', style)
-        questions = MCQuestion.objects.all()
-        i = 1
-        done = []
-        for question in questions:
-            if question not in done:
-                attempts = MCQuestionAttempt.objects.filter(mcquestion = question)
-                checklist.write(i, 0, question.content)
-                yes_count = 0
-                no_count = 0
-                for attempt in attempts:
+    checklist.write(0,0, 'Checklist (0 = No, 1 = Yes)', style)
+    i = 1
+    seen = []
+    for question in mcqs:
+        if question.mcquestion.id not in seen:
+            attempts = mcqs
+            checklist.write(i, 0, question.mcquestion.content)
+            yes_count = 0
+            no_count = 0
+            for attempt in attempts:
+                if attempt.mcquestion.id == question.mcquestion.id:
                     if attempt.answer.content == 'Yes':
                         yes_count = yes_count + 1
                     elif attempt.answer.content == 'No':
                         no_count = no_count + 1
-                if yes_count > no_count:
-                    checklist.write(i, 1, 1)
-                elif yes_count < no_count:
-                    checklist.write(i, 1, 0)
-                else:
-                    checklist.write(i, 1, 'equal')
-                i = i + 1
-                done.append(question)
-    else:
-        grs = workbook.add_sheet("GRS")
-        grs.write(0,0, 'GRS (score of 1 to 5)', style)
-        grs.write(0,1, 'Score', style)
-        questions = Likert.objects.all()
-        i = 1
-        done = []
-        for question in questions:
-            if question not in done:
-                attempts = LikertAttempt.objects.filter(likert = question)
-                grs.write(i, 0, question.content)
-                zero = 0
-                one = 0
-                two = 0
-                three = 0
-                four = 0
-                five = 0
-                for attempt in attempts:
+            if yes_count > no_count:
+                checklist.write(i, 1, 1)
+            elif yes_count < no_count:
+                checklist.write(i, 1, 0)
+            else:
+                checklist.write(i, 1, 'equal')
+            i = i + 1
+            seen.append(question.mcquestion.id)
+
+    i = i + 1
+    checklist.write(i,0, 'GRS (score of 1 to 5)', style)
+    checklist.write(i,1, 'Score', style)
+    i = i + 1
+    seen = []
+    attempt = []
+    for question in likert:
+        if question.likert.id not in seen:
+            attempts = likert
+            checklist.write(i, 0, question.likert.content)
+            zero = 0
+            one = 0
+            two = 0
+            three = 0
+            four = 0
+            five = 0
+            for attempt in attempts:
+                if question.likert.id == attempt.likert.id:
                     if attempt.scale == '0':
                         zero = zero + 1
                     elif attempt.scale == '1':
@@ -239,11 +242,11 @@ def create_sheet(workbook, sheet_type):
                     elif attempt.scale == '5':
                         five = five + 1
 
-                d = {'0': zero, '1': one, '2': two, '3': three, '4': four, '5': five}
-                maxx = max(d.values())
-                keys = [x + ' ' for x,y in d.items() if y ==maxx]
-                grs.write(i, 1, keys)
+            d = {'0': zero, '1': one, '2': two, '3': three, '4': four, '5': five}
+            maxx = max(d.values())
+            keys = [x + ' ' for x,y in d.items() if y ==maxx]
+            checklist.write(i, 1, keys)
 
-                i = i + 1
-                done.append(question)
+            i = i + 1
+            seen.append(question.likert.id)
     return workbook
