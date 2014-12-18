@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -22,7 +23,7 @@ def index (request, template_name):
             userprofile = UserProfile.objects.get(user = request.user)
         except UserProfile.DoesNotExist:
             return HttpResponseRedirect(reverse('registration_register'))
-        grades = Grade.objects.filter(student = userprofile.user).order_by('-date_added')
+        grades = Grade.objects.filter(student = userprofile.user, course__start_date__lte = datetime.now()).order_by('-date_added')
         return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
     else: 
         if request.POST:

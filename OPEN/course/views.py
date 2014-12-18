@@ -37,7 +37,7 @@ def all_user_courses(request, template_name):
     except User.DoesNotExist:
         return HttpResponseRedirect(reverse('registration_register'))
     
-    grades = Grade.objects.filter(student = user).order_by('-date_added')
+    grades = Grade.objects.filter(student = user, course__start_date__lte = datetime.datetime.now()).order_by('-date_added')
 
     return render_to_response(template_name, context_instance=RequestContext(request, {'grades': grades}))
 
