@@ -13,7 +13,7 @@
 		<video width="500" height="400" autoplay="autoplay" style=" background-color: black;">
 			<source src="{{ quiz.video.uploads.url }}"  type="video/mp4" />
 		</video>
-		{% endcomment %}
+
 		<object width="160" height="144"
 			classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
 			codebase="http://www.apple.com/qtactivex/qtplugin.cab">
@@ -26,6 +26,16 @@
 				pluginspage="http://www.apple.com/quicktime/download/">
 			</embed>
 		</object>
+		{% endcomment %}
+
+		<video width="500" height="400" controls autoplay style=" background-color: black;">
+			<source src="{{ quiz.video.uploads.url }}" type="video/webm" /><!-- WebM/VP8/Vorbis -->
+			<object width="640" height="505" type="application/x-shockwave-flash" data="{{ quiz.video.uploads.url }}">
+				<param name="movie" value="{{ quiz.video.uploads.url }}" />
+				<!-- fallback image -->
+				<img src="poster.jpg" width="640" height="360" alt="OPEN video" />
+			</object>
+		</video>
 	</div>
 
 
