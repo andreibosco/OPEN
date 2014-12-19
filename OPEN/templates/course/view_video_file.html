@@ -12,7 +12,6 @@
         <video width="570" height="340" controls="controls">
 		<source src="{{ vid.uploads.url }}"  type="video/mp4" />
 	</video>
-	{% endcomment %}
 	<object width="160" height="144"
 			classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
 			codebase="http://www.apple.com/qtactivex/qtplugin.cab">
@@ -25,6 +24,15 @@
 				pluginspage="http://www.apple.com/quicktime/download/">
 			</embed>
 		</object>
+	{% endcomment %}
+	<video width="570" height="340" controls autoplay style=" background-color: black;">
+			<source src="{{ vid.uploads.url }}" type="video/webm" /><!-- WebM/VP8/Vorbis -->
+			<object width="640" height="505" type="application/x-shockwave-flash" data="{{ vid.uploads.url }}">
+				<param name="movie" value="{{ vid.uploads.url }}" />
+				<!-- fallback image -->
+				<img src="poster.jpg" width="640" height="360" alt="OPEN video" />
+			</object>
+		</video>
 	{% else %}
 	<p>No Videos exist for this course</p>
 	{% endif %}
