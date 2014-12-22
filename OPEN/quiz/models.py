@@ -84,7 +84,7 @@ class MCQAnswer( TimeStampAwareModel ):
     correct = models.ForeignKey(Choice)
 
     def __unicode__(self):
-        return _("%s_%s") % (self.question.content, self.correct.content)
+        return _("%s_%s") % (self.question.content, self.question.quiz.video)
 
     class Meta:
         app_label = "quiz"
@@ -127,7 +127,7 @@ class LikertAnswer( TimeStampAwareModel ):
                                  default = '')
 
     def __unicode__(self):
-        return _("%s") % (self.question.content)
+        return _("%s, %s") % (self.question.content, self.question.quiz.video)
 
     class Meta:
         app_label = "quiz"

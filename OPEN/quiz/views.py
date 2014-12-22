@@ -190,6 +190,9 @@ def create_sheet(workbook, mcqs, likert, video_title):
     checklist = workbook.add_sheet(video_title)
     style = xlwt.easyxf('font: bold 1')
     checklist.write(0,0, 'Checklist (0 = No, 1 = Yes)', style)
+    checklist.write(0,1, 'Score', style)
+    checklist.write(0,2, 'No. of Raters', style)
+
     i = 1
     seen = []
     for question in mcqs:
@@ -210,12 +213,15 @@ def create_sheet(workbook, mcqs, likert, video_title):
                 checklist.write(i, 1, 0)
             else:
                 checklist.write(i, 1, 'equal')
+            checklist.write(i, 2, yes_count + no_count)
             i = i + 1
             seen.append(question.mcquestion.id)
 
     i = i + 1
     checklist.write(i,0, 'GRS (score of 1 to 5)', style)
     checklist.write(i,1, 'Score', style)
+    checklist.write(i,2, 'No. of Raters', style)
+
     i = i + 1
     seen = []
     attempt = []
@@ -248,6 +254,7 @@ def create_sheet(workbook, mcqs, likert, video_title):
             maxx = max(d.values())
             keys = [x + ' ' for x,y in d.items() if y ==maxx]
             checklist.write(i, 1, keys)
+            checklist.write(i, 2, sum(d.values()))
 
             i = i + 1
             seen.append(question.likert.id)
