@@ -142,6 +142,20 @@ def quiz_result(request, quiz_id, template_name):
     likert = LikertAttempt.objects.filter(likert__quiz = quiz, student = request.user, no_of_attempt = no_of_attempt)
     openended = OpenEndedAttempt.objects.filter(openended__quiz = quiz, student = request.user, no_of_attempt = no_of_attempt)
 
+    score = 0
+    total_score = 0
+
+    for mcq in mcquestion:
+        if mcq.correct:
+            score = score + 1
+        total_score = total_score + 1
+
+    for l in likert:
+        if l.correct:
+            score = score + 1
+        total_score = total_score + 1
+
+
     mcq_count = MCQuestionAttempt.objects.filter(student = request.user).values('mcquestion__quiz').distinct().count()
     likert_count = LikertAttempt.objects.filter(student = request.user).values('likert__quiz').distinct().count()
 
@@ -162,6 +176,8 @@ def quiz_result(request, quiz_id, template_name):
         'openended': openended,
         'iterator': iterator,
         'top': top,
+        'score': score,
+        'total_score': total_score,
     }
     return render_to_response(template_name, context_instance=RequestContext(request, data))
 
