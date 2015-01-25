@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from OPEN.quiz.views import get_data, quiz, quiz_result
+from OPEN.quiz.views import get_data, quiz, quiz_result, user_attempt
 
 
 urlpatterns = patterns('',
@@ -18,5 +18,9 @@ urlpatterns = patterns('',
     url( r'^get_data/$',
         get_data,
         name = 'get_data' ),
+
+    url( r'^user_attempt/$',
+        user_attempt,
+        name = 'user_attempt' ),
 
 )

@@ -1,6 +1,7 @@
 import xlwt
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
@@ -274,4 +275,77 @@ def create_sheet(workbook, mcqs, likert, video_title):
 
             i = i + 1
             seen.append(question.likert.id)
+    return workbook
+
+def user_attempt(request):
+    """
+    Create an excel file with Participant Attempts
+    """
+    response = HttpResponse(mimetype="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename="attempts.xls"'
+    workbook = xlwt.Workbook()
+    users = User.objects.all()
+    for user in users:
+        mcquestions = MCQuestionAttempt.objects.filter(student = user).order_by('mcquestion__quiz__video')
+        workbook = create_attempt_sheet(workbook, user, mcquestions, likert=None)
+
+    workbook.save(response)
+    return response
+
+def create_attempt_sheet(workbook, user, mcquestions, likert):
+    """
+    Create an excel sheet for Participant attempt
+    """
+    checklist = workbook.add_sheet(user.username)
+    style = xlwt.easyxf('font: bold 1')
+    i = 0
+    video = None
+    for mcquestion in mcquestions:
+        if video == mcquestion.mcquestion.quiz.video:
+            checklist.write(i,j, mcquestion.mcquestion.content)
+            if mcquestion.answer.content:
+                checklist.write(i,j+1, 1)
+                answer = 1
+            else:
+                checklist.write(i, j+1, 0)
+                answer = 0
+            if mcquestion.correct:
+                checklist.write(i,j+2, answer)
+                checklist.write(i,j+3, 0)
+            else:
+                if mcquestion.answer.content:
+                    checklist.write(i,j+2, 0)
+                else:
+                    checklist.write(i,j+2, 1)
+                checklist.write(i,j+3, 1)
+
+            i += 1
+        else:
+            j = 0
+            video = mcquestion.mcquestion.quiz.video
+            checklist.write(i,j, video.title, style)
+            checklist.write(i,j+1, "Date: " + str(mcquestion.date_added.strftime('%B %d ')), style)
+            checklist.write(i,j+3, "Input", style)
+            checklist.write(i,j+4, "Answer", style)
+            checklist.write(i,j+5, "Difference", style)
+            checklist.write(i+1,j+2, "Checklist (0 = No, 1 = Yes)", style)
+            i += 2
+            j = 2
+            checklist.write(i,j, mcquestion.mcquestion.content)
+            if mcquestion.answer.content:
+                checklist.write(i,j+1, 1)
+                answer = 1
+            else:
+                checklist.write(i, j+1, 0)
+                answer = 0
+            if mcquestion.correct:
+                checklist.write(i,j+2, answer)
+                checklist.write(i,j+3, 0)
+            else:
+                if mcquestion.answer.content:
+                    checklist.write(i,j+2, 0)
+                else:
+                    checklist.write(i,j+2, 1)
+                checklist.write(i,j+3, 1)
+            i += 1
     return workbook
