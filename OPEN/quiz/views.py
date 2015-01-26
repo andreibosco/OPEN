@@ -301,61 +301,67 @@ def create_attempt_sheet(workbook, user):
     i = 0
     videos = UploadedFile.objects.filter(file_type = 'VID')
     for video in videos:
-        j = 0
-        checklist.write(i,j, video.title, style)
-        checklist.write(i,j+1, "Date: " + str(video.date_added.strftime('%B %d ')), style)
-        checklist.write(i,j+3, "Input", style)
-        checklist.write(i,j+4, "Answer", style)
-        checklist.write(i,j+5, "Difference", style)
-        checklist.write(i+1,j+2, "Checklist (0 = No, 1 = Yes)", style)
-        i += 2
-        j += 2
+        score = 0
         mcquestions = MCQuestionAttempt.objects.filter(student = user, mcquestion__quiz__video = video)
-        for mcquestion in mcquestions:
-            checklist.write(i,j, mcquestion.mcquestion.content)
-            if mcquestion.answer.content:
-                checklist.write(i,j+1, 1)
-                answer = 1
-            else:
-                checklist.write(i, j+1, 0)
-                answer = 0
-            if mcquestion.correct:
-                checklist.write(i,j+2, answer)
-                checklist.write(i,j+3, 0)
-            else:
-                if mcquestion.answer.content:
-                    checklist.write(i,j+2, 0)
-                else:
-                    checklist.write(i,j+2, 1)
-                checklist.write(i,j+3, 1)
-            i += 1
-
-
-        checklist.write(i,j, "Score", style)
-#        checklist.write(i,j, str(score) + '/' + str(total_score))
-
-        i += 2
         likert = LikertAttempt.objects.filter(student = user, likert__quiz__video = video)
-        checklist.write(i,j, "GRS (score of 1 to 5)", style)
-        checklist.write(i,j+1, "Input", style)
-        checklist.write(i,j+2, "Answer", style)
-        checklist.write(i,j+3, "Difference", style)
-        i += 1
-        for l in likert:
-            checklist.write(i,j, l.likert.content)
-            checklist.write(i,j+1, l.scale)
-            if l.correct:
-                checklist.write(i,j+2, l.scale)
-                checklist.write(i,j+3, 0)
-            else:
-                try:
-                    answer = LikertAnswer.objects.get(question__quiz__video = video)
-                except LikertAnswer.DoesNotExist:
-                    answer = None
-                if answer:
-                    checklist.write(i,j+2, answer.correct)
-                    difference = int(l.scale) - int(answer.correct)
-                    checklist.write(i,j+3, abs(difference))
-            i += 1
 
+        if mcquestions or likert:
+            j = 0
+            checklist.write(i,j, video.title, style)
+            checklist.write(i,j+1, "Date: " + str(video.date_added.strftime('%B %d ')), style)
+            checklist.write(i,j+3, "Input", style)
+            checklist.write(i,j+4, "Answer", style)
+            checklist.write(i,j+5, "Difference", style)
+            checklist.write(i+1,j+2, "Checklist (0 = No, 1 = Yes)", style)
+            i += 2
+            j += 2
+
+            for mcquestion in mcquestions:
+                checklist.write(i,j, mcquestion.mcquestion.content)
+                if mcquestion.answer.content:
+                    checklist.write(i,j+1, 1)
+                    answer = 1
+                else:
+                    checklist.write(i, j+1, 0)
+                    answer = 0
+                if mcquestion.correct:
+                    score += 1
+                    checklist.write(i,j+2, answer)
+                    checklist.write(i,j+3, 0)
+                else:
+                    if mcquestion.answer.content:
+                        checklist.write(i,j+2, 0)
+                    else:
+                        checklist.write(i,j+2, 1)
+                    checklist.write(i,j+3, 1)
+                i += 1
+
+            i += 1
+            checklist.write(i,j, "GRS (score of 1 to 5)", style)
+            checklist.write(i,j+1, "Input", style)
+            checklist.write(i,j+2, "Answer", style)
+            checklist.write(i,j+3, "Difference", style)
+            i += 1
+            for l in likert:
+                checklist.write(i,j, l.likert.content)
+                checklist.write(i,j+1, l.scale)
+                if l.correct:
+                    score += 1
+                    checklist.write(i,j+2, l.scale)
+                    checklist.write(i,j+3, 0)
+                else:
+                    try:
+                        answer = LikertAnswer.objects.get(question__quiz__video = video)
+                    except LikertAnswer.DoesNotExist:
+                        answer = None
+                    if answer:
+                        checklist.write(i,j+2, answer.correct)
+                        difference = int(l.scale) - int(answer.correct)
+                        checklist.write(i,j+3, abs(difference))
+                i += 1
+
+            checklist.write(i,j, "Score", style)
+            total_score = mcquestions.count() + likert.count()
+            checklist.write(i,j+1, str(score) + '/' + str(total_score))
+            i += 1
     return workbook
