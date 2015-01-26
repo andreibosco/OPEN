@@ -348,10 +348,14 @@ def create_attempt_sheet(workbook, user):
                 checklist.write(i,j+2, l.scale)
                 checklist.write(i,j+3, 0)
             else:
-                answer = LikertAnswer.objects.get(question__quiz__video = video)
-                checklist.write(i,j+2, answer.correct)
-                difference = int(l.scale) - int(answer.correct)
-                checklist.write(i,j+3, abs(difference))
+                try:
+                    answer = LikertAnswer.objects.get(question__quiz__video = video)
+                except LikertAnswer.DoesNotExist:
+                    answer = None
+                if answer:
+                    checklist.write(i,j+2, answer.correct)
+                    difference = int(l.scale) - int(answer.correct)
+                    checklist.write(i,j+3, abs(difference))
             i += 1
 
     return workbook
