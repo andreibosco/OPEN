@@ -327,11 +327,8 @@ def create_attempt_sheet(workbook, user):
                     score += 1
                     checklist.write(i,j+2, answer)
                     checklist.write(i,j+3, 0)
-                else:
-                    if mcquestion.answer.content == 'Yes':
-                        checklist.write(i,j+2, 0)
-                    else:
-                        checklist.write(i,j+2, 1)
+                elif mcquestion.correct == 'No':
+                    checklist.write(i,j+2, answer)
                     checklist.write(i,j+3, 1)
                 i += 1
 
