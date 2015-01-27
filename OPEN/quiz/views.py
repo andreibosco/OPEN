@@ -286,7 +286,6 @@ def user_attempt(request):
     workbook = xlwt.Workbook()
     users = User.objects.all()
     for user in users:
-        #mcquestions = MCQuestionAttempt.objects.filter(student = user).order_by('mcquestion__quiz__video')
         workbook = create_attempt_sheet(workbook, user)
 
     workbook.save(response)
@@ -318,18 +317,18 @@ def create_attempt_sheet(workbook, user):
 
             for mcquestion in mcquestions:
                 checklist.write(i,j, mcquestion.mcquestion.content)
-                if mcquestion.answer.content:
+                if mcquestion.answer.content == 'Yes':
                     checklist.write(i,j+1, 1)
                     answer = 1
                 else:
                     checklist.write(i, j+1, 0)
                     answer = 0
-                if mcquestion.correct:
+                if mcquestion.correct == 'Yes':
                     score += 1
                     checklist.write(i,j+2, answer)
                     checklist.write(i,j+3, 0)
                 else:
-                    if mcquestion.answer.content:
+                    if mcquestion.answer.content == 'Yes':
                         checklist.write(i,j+2, 0)
                     else:
                         checklist.write(i,j+2, 1)
@@ -345,7 +344,7 @@ def create_attempt_sheet(workbook, user):
             for l in likert:
                 checklist.write(i,j, l.likert.content)
                 checklist.write(i,j+1, l.scale)
-                if l.correct:
+                if l.correct == 'Yes':
                     score += 1
                     checklist.write(i,j+2, l.scale)
                     checklist.write(i,j+3, 0)
