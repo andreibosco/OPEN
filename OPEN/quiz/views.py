@@ -323,12 +323,15 @@ def create_attempt_sheet(workbook, user):
                 else:
                     checklist.write(i, j+1, 0)
                     answer = 0
-                if mcquestion.correct == 'Yes':
+                if mcquestion.correct:
                     score += 1
                     checklist.write(i,j+2, answer)
                     checklist.write(i,j+3, 0)
-                elif mcquestion.correct == 'No':
-                    checklist.write(i,j+2, answer)
+                elif not mcquestion.correct:
+                    if answer:
+                        checklist.write(i,j+2, 0)
+                    else:
+                        checklist.write(i,j+2, 1)
                     checklist.write(i,j+3, 1)
                 i += 1
 
@@ -347,7 +350,7 @@ def create_attempt_sheet(workbook, user):
                     checklist.write(i,j+3, 0)
                 else:
                     try:
-                        answer = LikertAnswer.objects.get(question__quiz__video = video)
+                        answer = LikertAnswer.objects.get(question__quiz = l.likert.quiz, question__content = l.likert.content, question__quiz__video = video)
                     except LikertAnswer.DoesNotExist:
                         answer = None
                     if answer:
