@@ -14,8 +14,8 @@
 	<ul class="nav nav-tabs ml150" style="border-bottom:None;">
 	  <li class="pull-left"><a href="{% url 'course_pdf_list' course.id %}">PDF</a></li>
 	  <li class="pull-left"><a href="{% url 'course_quiz_list' course.id %}">Videos</a></li>
-	  {% comment %}<li class="pull-left"><a href="{% url 'course_forum_list' course.id %}">Forums</a></li>
-	  <li class="pull-left active"><a href="{% url 'course_video_list' course.id %}">Videos</a></li>{% endcomment %}
+	  <li class="pull-left"><a href="{% url 'course_forum_list' course.id %}">Forums</a></li>
+	  <li class="pull-left active"><a href="{% url 'course_video_list' course.id %}">Videos</a></li>
 	</ul>
 
 	{% if quizzes %}	

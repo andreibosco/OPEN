@@ -39,7 +39,7 @@ def index (request, template_name):
                             userprofile = UserProfile.objects.get(user = user)
                         except UserProfile.DoesNotExist:
                             return HttpResponseRedirect(reverse('registration_register'))
-                        grades = Grade.objects.filter(student = userprofile.user).order_by('-date_added')
+                        grades = Grade.objects.filter(student = userprofile.user, course__start_date__lte = datetime.now()).order_by('-date_added')
                         return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
                 else:
                     form = AuthenticationForm(None, request.POST)
@@ -85,7 +85,8 @@ def registration (request, template_name):
                 obj = form.save(commit = False)
                 obj.user = request.user
                 obj.save()
-            return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': request.user.get_profile()}))        
+            grades = Grade.objects.filter(student = userprofile.user, course__start_date__lte = datetime.now()).order_by('-date_added')
+            return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
         else:
             return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
     else:
