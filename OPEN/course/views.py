@@ -9,6 +9,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
+from OPEN.course.forms import AddForumForm
 from OPEN.course.models import Course, Forum, Grade, UploadedFile
 from OPEN.quiz.models import MCQuestionAttempt, LikertAttempt, OpenEndedAttempt, Quiz
 
@@ -221,4 +222,26 @@ def add_course(request):
             return HttpResponse(simplejson.dumps({"status": True, "course_id": course.id}))
     return HttpResponse(simplejson.dumps({"status": False}))
         
+@login_required
+def add_forum(request, course_id, template_name):
+    """
+    Create a new forum
+    """
+    try:
+        course = Course.objects.get(id = course_id)
+    except Course.DoesNotExist:
+        course = None
 
+    if request.method == 'POST':
+        form = AddForumForm(request.POST)
+        if form.is_valid():
+            forum = form.save(commit = False)
+            forum.user = request.user
+            forum.course = course
+            forum.save()
+            return render_to_response('course/view_forum.html', context_instance=RequestContext(request, {'forum': forum}))
+        else:
+            return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
+    else:
+        form = AddForumForm()
+        return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))

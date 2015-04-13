@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from OPEN.course.views import add_comment, add_course, available_course, all_user_courses, course, course_forum_list, course_pdf_list, course_video_list, course_quiz_list, view_file, view_forum, view_video_file
+from OPEN.course.views import add_comment, add_course, add_forum, available_course, all_user_courses, course, course_forum_list, course_pdf_list, course_video_list, course_quiz_list, view_file, view_forum, view_video_file
 
 
 urlpatterns = patterns('',
@@ -62,5 +62,10 @@ urlpatterns = patterns('',
     url(r'^add/$',
        add_course,
        name = 'add_course' ),
+
+    url(r'^(?P<course_id>\d+)/forum/add/$',
+       add_forum,
+       {'template_name': 'course/add_forum.html'},
+       name = 'add_forum' ),
 
 )

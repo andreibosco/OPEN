@@ -10,9 +10,14 @@
 <div class="span6 profileRows">
 	<h2 class="profileHeading">{{ forum.title }}<span class="pull-right"><a href="{% url 'course_forum_list' forum.course.id %}" class="Edit"><i class="icon-arrow-left"></i>Back</a></span></h2>
 	{% if forum %}
-	 <video width="570" height="340" controls="controls">
-		<source src="{{ forum.uploads.uploads.url }}"  type="video/mp4" />
-	</video>
+        <video width="500" height="400" controls autoplay style=" background-color: black;">
+            <source src="{{ quiz.video.uploads.url }}" type="video/webm" /><!-- WebM/VP8/Vorbis -->
+            <object width="640" height="505" type="application/x-shockwave-flash" data="{{ forum.uploads.url }}">
+                <param name="movie" value="{{ forum.uploads.url }}" />
+                <!-- fallback image -->
+                <img src="poster.jpg" width="640" height="360" alt="OPEN video" />
+            </object>
+        </video>
 	
 	<div class="media-body mb20">
 		<h4 class="media-heading">{{ forum.uploads.title }}</h4>
