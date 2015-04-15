@@ -233,12 +233,17 @@ def add_forum(request, course_id, template_name):
         course = None
 
     if request.method == 'POST':
-        form = AddForumForm(request.POST)
+        form = AddForumForm(request.POST, request.FILES)
         if form.is_valid():
-            forum = form.save(commit = False)
-            forum.user = request.user
-            forum.course = course
-            forum.save()
+            title = request.POST.get('title')
+            file = request.FILES.get('uploads')
+            file_type = file.name.split('.')[-1]
+            if file_type == 'pdf':
+                file_type = 'PDF'
+            else:
+                file_type = 'VID'
+            uploads = UploadedFile.objects.create(uploader = request.user, course = course, uploads = file, file_type = file_type, title = file.name)
+            forum = Forum.objects.create(course = course, user = request.user, uploads = uploads, title = title)
             return render_to_response('course/view_forum.html', context_instance=RequestContext(request, {'forum': forum}))
         else:
             return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
