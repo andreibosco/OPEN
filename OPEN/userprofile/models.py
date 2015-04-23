@@ -13,6 +13,10 @@ class UserProfile( TimeStampAwareModel ):
     """
     Profile model
     """
+    ROLE_CHOICES = (
+	    ('st', 'Student'),
+        ('in', 'Instructor'),
+    )
     user = models.ForeignKey(User)
     
     avatar = models.ImageField(_('profile pic'), upload_to = "images/", null = True, blank = True)
@@ -23,6 +27,7 @@ class UserProfile( TimeStampAwareModel ):
     date_of_birth = models.DateField(_('YYYY-MM-DD'), null = True, blank = True)
     website = models.URLField(_('website'), null = True, blank = True)
     feedback = models.BooleanField(_('give feedback'), default = False)
+    role = models.CharField(max_length = 2, choices = ROLE_CHOICES, blank = True, null = True, default = 'st')
 
     def __unicode__(self):
         return _("%s") % self.user.username
@@ -41,5 +46,3 @@ def user_profile_callback(sender, user, request, **kwargs):
     profile.save()
  
 user_registered.connect(user_profile_callback)
-
-
