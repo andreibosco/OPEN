@@ -1,5 +1,6 @@
-from django.forms import CharField, FileField, Form, ValidationError
-from OPEN.course.models import Forum
+from django.forms import CharField, DateInput, FileField, Form, ModelForm, Textarea, TextInput, ValidationError
+
+from OPEN.course.models import Course, Forum
 
 
 class AddForumForm(Form):
@@ -16,3 +17,19 @@ class AddForumForm(Form):
             return uploads
         else:
             raise ValidationError("Not a valid upload file")
+
+
+class AddCourseForm(ModelForm):
+    """
+    Add new Course
+    """
+    class Meta:
+        model = Course
+        exclude = ['date_deleted', 'user']
+        widgets = {
+            'title': TextInput(attrs={'placeholder': 'Title'}),
+            'code': TextInput(attrs={'placeholder': 'Course Code'}),
+            'description': Textarea(attrs={'placeholder': 'Course Description'}),
+            'start_date': DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
+            'end_date': DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
+        }

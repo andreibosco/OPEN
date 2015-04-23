@@ -1,4 +1,4 @@
-import datetime
+import datetime, time
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -9,8 +9,9 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
-from OPEN.course.forms import AddForumForm
+from OPEN.course.forms import AddCourseForm, AddForumForm
 from OPEN.course.models import Course, Forum, Grade, UploadedFile
+from OPEN.institute.models import Institute
 from OPEN.quiz.models import MCQuestionAttempt, LikertAttempt, OpenEndedAttempt, Quiz
 
 from annoying.decorators import ajax_request
@@ -25,7 +26,7 @@ def course(request, course_id, template_name):
     try:
         course = Course.objects.get(id = course_id)
     except Course.DoesNotExist:
-        pass
+        return HttpResponseRedirect(reverse('index'))
     return render_to_response(template_name, context_instance=RequestContext(request, {'course': course}))
 
 @login_required
@@ -250,3 +251,33 @@ def add_forum(request, course_id, template_name):
     else:
         form = AddForumForm()
         return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
+
+def add_new_course(request, template_name):
+    """
+    Create a new Course
+    """
+    if request.method == 'POST':
+        form = AddCourseForm(request.POST)
+        if form.is_valid():
+            try:
+                institute = Institute.objects.get(id = request.POST.get('institute', ''))
+            except Institute.DoesNotExist:
+                institute = None
+            course, flag = Course.objects.get_or_create(user = request.user, description = request.POST.get('description', ''),
+                                institute = institute, title = request.POST.get('title', ''),
+                                code = request.POST.get('code', ''))
+            if request.POST.get('start_date'):
+                course.start_date = request.POST.get('start_date')
+            else:
+                course.start_date = time.strftime('%Y-%m-%d')
+            if request.POST.get('end_date'):
+                course.end_date = request.POST.get('end_date')
+            course.save()
+            if flag:
+                Grade.objects.create(student = course.user, course = course)
+            return HttpResponseRedirect(reverse('all_user_courses'))
+        else:
+            return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
+    else:
+        form = AddCourseForm()
+        return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))

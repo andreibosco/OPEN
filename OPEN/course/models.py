@@ -13,6 +13,7 @@ class Course( TimeStampAwareModel ):
     Course model
     """
     institute = models.ForeignKey(Institute)    
+    user = models.ForeignKey(User)
 
     title = models.CharField(_('title'), max_length = 100)
     description = models.TextField(_('description'), null = True, blank = True)
