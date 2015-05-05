@@ -5,11 +5,13 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db.models import Max
 from django.http import HttpResponse, HttpResponseRedirect
+from django.forms import ModelChoiceField
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
-from OPEN.course.models import UploadedFile
+from OPEN.course.models import Course ,UploadedFile
+from OPEN.quiz.forms import AddQuizForm
 from OPEN.quiz.models import Choice, Likert, LikertAttempt, LikertAnswer, MCQuestion, MCQAnswer, MCQuestionAttempt, OpenEnded, OpenEndedAttempt, Quiz
 
 
@@ -364,3 +366,92 @@ def create_attempt_sheet(workbook, user):
             checklist.write(i,j+1, str(score) + '/' + str(total_score))
             i += 1
     return workbook
+
+@login_required
+def quiz_add(request, course_id, template_name):
+    """
+    Render add new quiz page and handle POST requests
+    """
+    try:
+        course = Course.objects.get(id = course_id)
+    except Course.DoesNotExist:
+        course = None
+    if request.method == 'POST':
+        form = AddQuizForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit = False)
+            form.user = request.user
+            form.course = course
+            form.save()
+            try:
+                quiz = Quiz.objects.get(id = form.id)
+            except Quiz.DoesNotExist:
+                return HttpResponseRedirect(reverse('quiz_add', args=[course.id]))
+            return HttpResponseRedirect(reverse('mcquestion_add', args=[quiz.id]))
+        else:
+            return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
+    else:
+        AddQuizForm.base_fields['video'] = ModelChoiceField(queryset= UploadedFile.objects.filter(file_type = 'VID'))
+        form = AddQuizForm()
+        return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course_id': course.id}))
+
+@login_required
+def mcquestion_add(request, quiz_id, template_name):
+    """
+    Render add new MCquestion page and handle POST requests
+    """
+    if request.method == 'POST':
+        try:
+            quiz = Quiz.objects.get(id = quiz_id)
+        except Quiz.DoesNotExist:
+            return HttpResponseRedirect(reverse('all_user_courses'))
+
+        for key, value in request.POST.iteritems():
+            if value and key.split('_')[0] == 'content':
+                qs = key.split('_')[1]
+                mcquestion = MCQuestion.objects.create(quiz = quiz, content = value)
+                for key, value in request.POST.iteritems():
+                    if value and key.split('_')[0] == 'choice' and key.split('_')[1] == qs:
+                        choice = Choice.objects.create(content = value)
+                        mcquestion.choice.add(choice)
+        return HttpResponseRedirect(reverse('likert_add', args=[quiz_id]))
+    else:
+        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': [1,2,3]}))
+
+@login_required
+def likert_add(request, quiz_id, template_name):
+    """
+    Render add new Likert question page and handle POST requests
+    """
+    if request.method == 'POST':
+        try:
+            quiz = Quiz.objects.get(id = quiz_id)
+        except Quiz.DoesNotExist:
+            return HttpResponseRedirect(reverse('all_user_courses'))
+
+        for key, value in request.POST.iteritems():
+            if value and key.split('_')[0] == 'content':
+                likert = Likert.objects.create(quiz = quiz, content = value)
+        return HttpResponseRedirect(reverse('openended_add', args=[quiz_id]))
+    else:
+        counter = [1,2,3]
+        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': counter}))
+
+@login_required
+def openended_add(request, quiz_id, template_name):
+    """
+    Render add new OpenEnded question page and handle POST requests
+    """
+    if request.method == 'POST':
+        try:
+            quiz = Quiz.objects.get(id = quiz_id)
+        except Quiz.DoesNotExist:
+            return HttpResponseRedirect(reverse('all_user_courses'))
+
+        for key, value in request.POST.iteritems():
+            if value and key.split('_')[0] == 'content':
+                openended = OpenEnded.objects.create(quiz = quiz, content = value)
+        return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
+    else:
+        counter = [1,2,3]
+        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': counter}))

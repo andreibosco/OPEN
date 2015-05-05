@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Add New MCQuestions" %}
+{% endblock %}
+
+{% block content %}
+<div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
+	    <img src="{{ STATIC_URL }}img/quiz.jpg" />
+        </div>
+<div class="span6 profileRows">
+	<h2 class="profileHeading">Multiple Choice Questions</h2>
+    {% if form.errors %}
+        <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
+    {% endif %}
+
+  <div class="span5" id="regForm">
+  <form enctype="multipart/form-data" method="POST" action="{% url 'mcquestion_add' quiz_id %}" class="form-horizontal" name="AddQuestionForm">
+	{% csrf_token %}
+    <div id="qs_list">
+      {% for c in counter %}
+      <div class="control-group">
+          <label class="control-label" for="id_content_{{ c }}"><strong>Qs. {{ c }}</strong></label>
+          <div class="controls">
+              <input type="text" placeholder="Multiple Choice Question" name="content_{{ c }}" class="qs-input" maxlength="1000" id="id_content_{{ c }}">
+              {% if form.title.errors %}
+                <p class="error">{{ form.title.errors.as_text }}</p>
+            {% endif %}
+          </div>
+
+        <ul class="clearfix">
+            <li class="mb10 mt10">
+                <label class="control-label" for="id_choice_{{ c }}_a">(a)</label>
+                <div class="controls">
+                  <input type="text" placeholder="Choice (a)" name="choice_{{ c }}_a" maxlength="100" id="id_choice_{{ c }}_a" class="qs-input">
+                </div>
+            </li>
+
+            <li class="mb10">
+                <label class="control-label" for="id_choice_{{ c }}_b">(b)</label>
+                <div class="controls">
+                    <input type="text" placeholder="Choice (b)" name="choice_{{ c }}_b" maxlength="100" id="id_choice_{{ c }}_b" class="qs-input">
+                </div>
+            </li>
+
+            <li class="mb10">
+                <label class="control-label" for="id_choice_{{ c }}_c">(c)</label>
+                <div class="controls">
+                    <input type="text" placeholder="Choice (c)" name="choice_{{ c }}_c" maxlength="100" id="id_choice_{{ c }}_c" class="qs-input">
+                </div>
+            </li>
+
+            <li class="mb10">
+                <label class="control-label" for="id_choice_{{ c }}_d">(d)</label>
+                <div class="controls">
+                    <input type="text" placeholder="Choice (d)" name="choice_{{ c }}_d" maxlength="100" id="id_choice_{{ c }}_d" class="qs-input">
+                </div>
+            </li>
+        </ul>
+          <div class="span5" style="margin-left:100px;"><hr></div>
+    </div>
+    {% endfor %}
+    </div>
+    <div class="control-group">
+	<div class="controls">
+        <button id="add_more" class="btn">Add More Qs.</button>
+		<button type="submit" class="btn">Submit</button>
+	</div>
+    </div>
+  </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_body %}
+<script type="text/javascript">
+	$('#add_more').click(function(event){
+	    event.preventDefault();
+	    var count = $('#qs_list').children().length + 1;
+        qs_list = "<div class=\"control-group\"><label class=\"control-label\" for=\"id_content_" + count + "\"><strong>Qs. " + count + "</strong></label><div class=\"controls\"><input type=\"text\" placeholder=\"Multiple Choice Question\" name=\"content_" + count + "\" class=\"qs-input\" maxlength=\"1000\" id=\"id_content_" + count + "\"><p class=\"error\"></p></div><ul class=\"clearfix\"><li class=\"mb10 mt10\"><label class=\"control-label\" for=\"id_choice_" + count + "_a\">(a)</label><div class=\"controls\"><input type=\"text\" placeholder=\"Choice (a)\" name=\"choice_" + count + "_a\" maxlength=\"100\" id=\"id_choice_" + count + "_a\" class=\"qs-input\"></div></li><li class=\"mb10\"><label class=\"control-label\" for=\"id_choice_" + count + "_b\">(b)</label><div class=\"controls\"><input type=\"text\" placeholder=\"Choice (b)\" name=\"choice_" + count + "_b\" maxlength=\"100\" id=\"id_choice_" + count + "_b\" class=\"qs-input\"></div></li><li class=\"mb10\"><label class=\"control-label\" for=\"id_choice_" + count + "_c\">(c)</label><div class=\"controls\"><input type=\"text\" placeholder=\"Choice (c)\" name=\"choice_" + count + "_c\" maxlength=\"100\" id=\"id_choice_" + count + "_c\" class=\"qs-input\"></div></li><li class=\"mb10\"><label class=\"control-label\" for=\"id_choice_" + count + "_d\">(d)</label><div class=\"controls\"><input type=\"text\" placeholder=\"Choice (d)\" name=\"choice_" + count + "_d\" maxlength=\"100\" id=\"id_choice_" + count + "_d\" class=\"qs-input\"></div></li></ul><div class=\"span5\" style=\"margin-left:100px;\"><hr></div></div>";
+        $('#qs_list').append(qs_list);
+	});
+</script>
+{% endblock %}

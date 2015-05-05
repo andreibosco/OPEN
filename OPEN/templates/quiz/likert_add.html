@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Add New Likert Questions" %}
+{% endblock %}
+
+{% block content %}
+<div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
+	    <img src="{{ STATIC_URL }}img/quiz.jpg" />
+        </div>
+<div class="span6 profileRows">
+	<h2 class="profileHeading">Likert Questions</h2>
+    {% if form.errors %}
+        <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
+    {% endif %}
+
+  <div class="span5" id="regForm">
+  <form enctype="multipart/form-data" method="POST" action="{% url 'likert_add' quiz_id %}" class="form-horizontal" name="AddQuestionForm">
+	{% csrf_token %}
+    <div id="qs_list">
+      {% for c in counter %}
+      <div class="control-group">
+          <label class="control-label" for="id_content_{{ c }}"><strong>Qs. {{ c }}</strong></label>
+          <div class="controls">
+              <input type="text" placeholder="Likert Question" name="content_{{ c }}" class="qs-input" maxlength="1000" id="id_content_{{ c }}">
+              {% if form.title.errors %}
+                <p class="error">{{ form.title.errors.as_text }}</p>
+            {% endif %}
+          </div>
+          <div class="span5" style="margin-left:100px;"><hr></div>
+    </div>
+    {% endfor %}
+    </div>
+    <div class="control-group">
+	<div class="controls">
+        <button id="add_more" class="btn">Add More Qs.</button>
+		<button type="submit" class="btn">Submit</button>
+	</div>
+    </div>
+  </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_body %}
+<script type="text/javascript">
+	$('#add_more').click(function(event){
+	    event.preventDefault();
+	    var count = $('#qs_list').children().length + 1;
+        qs_list = "<div class=\"control-group\"><label class=\"control-label\" for=\"id_content_" + count + "\"><strong>Qs. " + count + "</strong></label><div class=\"controls\"><input type=\"text\" placeholder=\"Likert Question\" name=\"content_" + count + "\" class=\"qs-input\" maxlength=\"1000\" id=\"id_content_" + count + "\"><p class=\"error\"></p></div><div class=\"span5\" style=\"margin-left:100px;\"><hr></div></div>";
+        $('#qs_list').append(qs_list);
+	});
+</script>
+{% endblock %}
