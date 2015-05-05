@@ -34,8 +34,9 @@
 .ml0 {margin-left:0px !important;}
 .ml150 {margin-left:150px !important;}
 .ml300 {margin-left:300px;}
-.mt10 {margin-top:10px;}
+.mt10 {margin-top:10px !important;}
 .p0 {padding:0px !important;}
+.qs-input {width:400px; height:25px !important;}
 
 #rowHeight{min-height:560px;}
 #searchbar{margin-left:225px; margin-top:-50px;}
@@ -112,6 +113,7 @@ li.cart{background-position: 109px 38px;}
 .details{float:left; display:block; margin-left:10px; font-size:12px;}
 
 .course-icon{background-image:url("../img/course-Icon.png"); background-position:1px 1px; background-repeat:no-repeat; padding-left:30px;}
+.profile-icon{background-image:url("../img/profile-Icon.png"); background-position:1px 1px; background-repeat:no-repeat; padding-left:30px;}
 
 #regForm{margin: 0 0 0 -50px;}
 

@@ -24,6 +24,6 @@ class UserProfileForm( ModelForm ):
             'address': TextInput(attrs={'placeholder': 'Address'}),
             'city': TextInput(attrs={'placeholder': 'City'}),
             'phone': TextInput(attrs={'placeholder': 'Phone'}),
-            'date_of_birth': TextInput(attrs={'placeholder': 'Date of Birth'}),            
+            'date_of_birth': TextInput(attrs={'placeholder': 'Date of Birth'}),
             'website': TextInput(attrs={'placeholder': 'Web Site'}),
         }

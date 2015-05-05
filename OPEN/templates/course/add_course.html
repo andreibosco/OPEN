@@ -9,7 +9,7 @@
 	    <img src="{{ STATIC_URL }}img/course.jpg" />
         </div>
 <div class="span6 profileRows">
-	<h2 class="profileHeading">Add New Course<span class="pull-right"><a href="{% url 'all_user_courses' %}" class="Edit">Back<i class="icon-arrow-left"></i></a></span></h2>
+	<h2 class="profileHeading">Add New Course<span class="pull-right"><a href="{% url 'all_user_courses' %}" class="Edit"><i class="icon-arrow-left"></i> Back</a></span></h2>
     {% if form.errors %}
         <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
     {% endif %}

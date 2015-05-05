@@ -29,7 +29,7 @@ class AddCourseForm(ModelForm):
         widgets = {
             'title': TextInput(attrs={'placeholder': 'Title'}),
             'code': TextInput(attrs={'placeholder': 'Course Code'}),
-            'description': Textarea(attrs={'placeholder': 'Course Description'}),
+            'description': Textarea(attrs={'placeholder': 'Course Description', 'rows': 4}),
             'start_date': DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
             'end_date': DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
         }
