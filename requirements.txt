@@ -18,3 +18,4 @@ boto
 awscli
 xlwt==0.7.5
 django-tracking2==0.2.3
+django-session-idle-timeout==1.4.2
