@@ -10,7 +10,7 @@ urlpatterns = patterns('',
         {'template_name': 'course/all_user_courses.html'},
         name = 'all_user_courses' ),
 
-    url( r'^course/add/$', 
+    url( r'^available/$',
         available_course,
         {'template_name': 'course/available_course.html'},
         name = 'available_course' ),

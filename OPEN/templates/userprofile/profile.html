@@ -94,7 +94,13 @@
         <div style="clear:both;"></div> 
 	</div>
 	 <div class="profileRows">
-		 <h2 class="profileHeading"><i class="course-icon"></i> My Courses<span class="pull-right"><a href="{% url 'add_new_course' %}" class="Edit"><i class="icon-plus"></i> Add</a></span></h2>
+		 <h2 class="profileHeading"><i class="course-icon"></i> My Courses<span class="pull-right">
+             {% ifequal userprofile.role 'in' %}
+             <a href="{% url 'add_new_course' %}" class="Edit"><i class="icon-plus"></i> Add</a>
+             {% else %}
+             <a href="{% url 'available_course' %}" class="Edit"><i class="icon-plus"></i> Add</a>
+             {% endifequal %}
+         </span></h2>
 	{% if grades %}
 	<ul>
 	    {% for grade in grades %}

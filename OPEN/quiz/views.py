@@ -412,11 +412,25 @@ def mcquestion_add(request, quiz_id, template_name):
                 mcquestion = MCQuestion.objects.create(quiz = quiz, content = value)
                 for key, value in request.POST.iteritems():
                     if value and key.split('_')[0] == 'choice' and key.split('_')[1] == qs:
-                        choice = Choice.objects.create(content = value)
+                        choice, flag = Choice.objects.get_or_create(content = value)
                         mcquestion.choice.add(choice)
+
+        question_bank = request.POST.getlist('bank')
+        mcquestions = MCQuestion.objects.filter(id__in = question_bank)
+        for mcquestion in mcquestions:
+            question = MCQuestion.objects.create(quiz = quiz, content = mcquestion.content)
+            choices = mcquestion.choice.all()
+            for choice in choices:
+                question.choice.add(choice)
         return HttpResponseRedirect(reverse('likert_add', args=[quiz_id]))
     else:
-        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': [1,2,3]}))
+        contents = MCQuestion.objects.all().values('content').distinct()
+        qs_bank = []
+        for content in contents:
+            qs = MCQuestion.objects.filter(content = content['content'])
+            if qs:
+                qs_bank.append(qs[0])
+        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': [1,2,3], 'qs_bank': qs_bank}))
 
 @login_required
 def likert_add(request, quiz_id, template_name):
@@ -432,10 +446,20 @@ def likert_add(request, quiz_id, template_name):
         for key, value in request.POST.iteritems():
             if value and key.split('_')[0] == 'content':
                 likert = Likert.objects.create(quiz = quiz, content = value)
+
+        question_bank = request.POST.getlist('bank')
+        likert = Likert.objects.filter(id__in = question_bank)
+        for l in likert:
+            question = Likert.objects.create(quiz = quiz, content = l.content)
         return HttpResponseRedirect(reverse('openended_add', args=[quiz_id]))
     else:
-        counter = [1,2,3]
-        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': counter}))
+        contents = Likert.objects.all().values('content').distinct()
+        qs_bank = []
+        for content in contents:
+            qs = Likert.objects.filter(content = content['content'])
+            if qs:
+                qs_bank.append(qs[0])
+        return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': [1,2,3], 'qs_bank': qs_bank}))
 
 @login_required
 def openended_add(request, quiz_id, template_name):
@@ -451,7 +475,59 @@ def openended_add(request, quiz_id, template_name):
         for key, value in request.POST.iteritems():
             if value and key.split('_')[0] == 'content':
                 openended = OpenEnded.objects.create(quiz = quiz, content = value)
-        return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
+        return HttpResponseRedirect(reverse('quiz', args=[quiz.id]))
     else:
         counter = [1,2,3]
         return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': counter}))
+
+@login_required
+def instructor_attempt(request, quiz_id, template_name):
+    """
+    Render quiz page for instructor to fill correct MCQ and Likert answers
+    """
+    try:
+        quiz = Quiz.objects.get(id = quiz_id)
+    except Quiz.DoesNotExist:
+        return HttpResponseRedirect(reverse('index'))
+
+    if request.method == 'POST':
+        for key, value in request.POST.iteritems():
+            try:
+                q_type = key.split('_')[0]
+                q_id = key.split('_')[1]
+            except:
+                q_type = None
+                q_id = None
+
+            if q_type == 'mcquestion':
+                try:
+                    mcquestion = MCQuestion.objects.get(id = q_id)
+                except MCQuestion.DoesNotExist:
+                    mcquestion = None
+
+                try:
+                    answer = Choice.objects.get(content = value)
+                except Choice.DoesNotExist:
+                    answer = None
+
+                mcqanswer = MCQAnswer.objects.create(question = mcquestion, correct = answer)
+
+            elif q_type == 'likert':
+                try:
+                    likert = Likert.objects.get(id = q_id)
+                except Likert.DoesNotExist:
+                    likert = None
+
+                likertanswer = LikertAnswer.objects.create(question = likert, correct = value)
+
+            return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
+    else:
+        mcquestions = MCQuestion.objects.filter(quiz = quiz)
+        likert = Likert.objects.filter(quiz = quiz)
+
+        data = {
+            'quiz': quiz,
+            'mcquestions': mcquestions,
+            'likert': likert,
+        }
+        return render_to_response(template_name, context_instance=RequestContext(request, data))

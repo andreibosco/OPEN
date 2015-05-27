@@ -126,7 +126,6 @@ def view_forum(request, course_id, forum_id, template_name):
         forum = Forum.objects.get(id = forum_id)
     except Forum.DoesNotExist:
         forum = None
-
     return render_to_response(template_name, context_instance=RequestContext(request, {'forum': forum}))
 
 @login_required
@@ -143,7 +142,7 @@ def add_comment(request, course_id, forum_id):
                 return HttpResponseRedirect(reverse('registration_register'))
             comment = request.POST.get('comment')
             
-            comment = ThreadedComment.objects.create(comment = comment, user_id = user.id, content_type_id = '22', site_id = '1', object_pk = forum_id, submit_date = datetime.datetime.now())
+            comment = ThreadedComment.objects.create(comment = comment, user_id = user.id, content_type_id = '21', site_id = '1', object_pk = forum_id, submit_date = datetime.datetime.now())
             
             date = comment.submit_date.strftime("%b. %d, %Y, %I:%M ")
             if comment.submit_date.strftime('%p') == 'AM':

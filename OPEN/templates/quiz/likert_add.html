@@ -31,6 +31,16 @@
     </div>
     {% endfor %}
     </div>
+      {% if qs_bank %}
+          <div class="control-group" style="margin-left:100px;">
+          <select multiple="multiple" name="bank" id="bank" size="10" style="width:500px;">
+              {% for qs in qs_bank %}
+                <option value="{{ qs.id }}">{{ qs }}</option>
+              {% endfor %}
+          </select>
+          <p class="smallText">Press CTRL to select multiple questions</p>
+          </div>
+      {% endif %}
     <div class="control-group">
 	<div class="controls">
         <button id="add_more" class="btn">Add More Qs.</button>

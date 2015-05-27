@@ -1,12 +1,17 @@
 from django.conf.urls import patterns, url
 
-from OPEN.quiz.views import get_data, likert_add, mcquestion_add, openended_add, quiz, quiz_add, quiz_result, user_attempt
+from OPEN.quiz.views import get_data, instructor_attempt, likert_add, mcquestion_add, openended_add, quiz, quiz_add, quiz_result, user_attempt
 
 
 urlpatterns = patterns('',
 
      url( r'^(?P<quiz_id>\d+)/$', 
         quiz,
+        {'template_name': 'quiz/quiz.html'},
+        name = 'quiz' ),
+
+    url( r'^(?P<quiz_id>\d+)/attempt/$',
+        instructor_attempt,
         {'template_name': 'quiz/quiz.html'},
         name = 'quiz' ),
 

@@ -83,14 +83,13 @@
 	    dateType : "json",
 	    success : function(response){
 	    	if(response.status){
-		    var str = document.getElementById('commentsContainer').innerHTML;
-		    console.log(response.avatar);
-		    str = str.concat('<li class="clearfix span7"><div class="thumbs pull-left"><a href="javascript:void(0);"><img width="50/" height="50" src="' + response.avatar + '"></a></div><div class="documentsInfo span5 ml10"><p><a href="{% url "index" %}"><strong>' + response.name + '</strong></a> - <a href="javascript:void(0);" class="smallText">' + response.date + '</a></p><p class="smallText">' + response.comment + '</p></div></li>')
-		    document.getElementById('commentsContainer').innerHTML = str;
-		    $('#comment').val('');
-		    if(document.getElementById('noComments')){
-			    document.getElementById('noComments').innerHTML = '';
-			}
+    		    var str = document.getElementById('commentsContainer').innerHTML;
+	    	    str = str.concat('<li class="clearfix span7"><div class="thumbs pull-left"><img width="50/" height="50" src="' + response.avatar + '"></div><div class="documentsInfo span5 ml10"><p><a href="{% url "index" %}"><strong>' + response.name + '</strong></a> - <a href="javascript:void(0);" class="smallText">' + response.date + '</a></p><p class="smallText">' + response.comment + '</p></div></li>')
+		        document.getElementById('commentsContainer').innerHTML = str;
+		        $('#comment').val('');
+		            if(document.getElementById('noComments')){
+			        document.getElementById('noComments').innerHTML = '';
+			    }
 	    	}
 	    }	
 	});

@@ -1,19 +1,15 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from OPEN.userprofile.forms import UserProfileForm
 from OPEN.userprofile.views import index, registration
 
-from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'OPEN.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
-
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^accounts/register/$', registration, {'template_name': 'registration/registration_form.html'}, name='registration_register'),
@@ -22,10 +18,7 @@ urlpatterns = patterns('',
 
     url(r'^comments/', include('django.contrib.comments.urls')),
 
-    url( r'^$', 
-        index,
-        { 'template_name': 'index.html' },
-        name = 'index' ),
+    url( r'^$', index, { 'template_name': 'index.html' }, name = 'index' ),
 
     url(r'^accounts/', include('OPEN.account.urls')),
     
@@ -33,8 +26,11 @@ urlpatterns = patterns('',
 
     url(r'^course/', include('OPEN.course.urls')),
 
-    url(r'^quiz/', include('OPEN.quiz.urls')), 
+    url(r'^quiz/', include('OPEN.quiz.urls')),
 
+    url(r'^tracking/', include('tracking.urls')),
+
+    url(r'^django-session-idle-timeout/', include('django-session-idle-timeout.urls')),
 )
 
 urlpatterns += staticfiles_urlpatterns()
