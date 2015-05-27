@@ -50,6 +50,8 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'sorl.thumbnail',
     'storages',
+    'tracking',
+    'django-session-idle-timeout',
 
     #my apps
     'OPEN.userprofile',
@@ -60,12 +62,14 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django-session-idle-timeout.middleware.SessionIdleTimeout',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -94,8 +98,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',#'django.db.backends.mysql',
         'NAME': 'OPENdatabase', #os.path.join(BASE_DIR, 'OPENdb'),
-	'USER': 'zain',
-	'PASSWORD': '123456',
+	    'USER': 'zain',
+	    'PASSWORD': '123456',
     }
 }
 
@@ -158,3 +162,9 @@ AWS_SECRET_ACCESS_KEY = 'Iy5fiRy47s/lmgTAqWPZ1mjhLUUSZ9aJEuwavZgH'
 AWS_STORAGE_BUCKET_NAME = 'openkids'
 AWS_QUERYSTRING_AUTH = False
 MEDIA_URL = 'http://%s.s3.amazonaws.com/your-folder/' % AWS_STORAGE_BUCKET_NAME
+
+TRACK_AJAX_REQUESTS = True
+TRACK_PAGEVIEWS = True
+TRACK_QUERY_STRING = True
+
+SESSION_IDLE_TIMEOUT = 1800
