@@ -475,7 +475,7 @@ def openended_add(request, quiz_id, template_name):
         for key, value in request.POST.iteritems():
             if value and key.split('_')[0] == 'content':
                 openended = OpenEnded.objects.create(quiz = quiz, content = value)
-        return HttpResponseRedirect(reverse('quiz', args=[quiz.id]))
+        return HttpResponseRedirect(reverse('instructor_attempt', args=[quiz.id]))
     else:
         counter = [1,2,3]
         return render_to_response(template_name, context_instance=RequestContext(request, {'quiz_id': quiz_id, 'counter': counter}))
@@ -520,7 +520,7 @@ def instructor_attempt(request, quiz_id, template_name):
 
                 likertanswer = LikertAnswer.objects.create(question = likert, correct = value)
 
-            return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
+        return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
     else:
         mcquestions = MCQuestion.objects.filter(quiz = quiz)
         likert = Likert.objects.filter(quiz = quiz)

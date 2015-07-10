@@ -85,7 +85,7 @@ def registration (request, template_name):
                 obj = form.save(commit = False)
                 obj.user = request.user
                 obj.save()
-            grades = Grade.objects.filter(student = userprofile.user, course__start_date__lte = datetime.now()).order_by('-date_added')
+            grades = Grade.objects.filter(student = request.user, course__start_date__lte = datetime.now()).order_by('-date_added')
             return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
         else:
             return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))

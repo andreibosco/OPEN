@@ -40,8 +40,11 @@
 
 
 	<div class="span4" style="height:500px; margin-left:40px; overflow: auto;" id="quizForm">
-
-	<form enctype="multipart/form-data" method="POST" action="{% url 'quiz' quiz.id %}" class="form-horizontal" name="QuizForm">
+        {% ifequal request.user.get_profile.role 'in' %}
+	<form enctype="multipart/form-data" method="POST" action="{% url 'instructor_attempt' quiz.id %}" class="form-horizontal" name="QuizForm">
+        {% else %}
+        <form enctype="multipart/form-data" method="POST" action="{% url 'quiz' quiz.id %}" class="form-horizontal" name="QuizForm">
+        {% endifequal %}
 	    {% csrf_token %}
 	    <div class="profileRows">
 

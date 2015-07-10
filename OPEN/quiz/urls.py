@@ -13,7 +13,7 @@ urlpatterns = patterns('',
     url( r'^(?P<quiz_id>\d+)/attempt/$',
         instructor_attempt,
         {'template_name': 'quiz/quiz.html'},
-        name = 'quiz' ),
+        name = 'instructor_attempt' ),
 
     url( r'^(?P<quiz_id>\d+)/result/$',
         quiz_result,
