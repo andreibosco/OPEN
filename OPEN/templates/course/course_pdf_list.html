@@ -10,7 +10,11 @@
         </div>
 
 <div class="span6 profileRows">
-	<h2 class="profileHeading">PDF Files for {{ course.title }}</h2>
+	<h2 class="profileHeading">PDF Files for {{ course.title }}
+		<span class="pull-right">
+            <a href="{% url 'add_pdf' course.id %}" class="Edit"><i class="icon-plus"></i> Add</a>
+    	</span>
+	</h2>
 	<ul class="nav nav-tabs ml150" style="border-bottom:None;">
 	  <li class="pull-left active"><a href="{% url 'course_pdf_list' course.id %}">PDF</a></li>
 	  <li class="pull-left"><a href="{% url 'course_quiz_list' course.id %}">Quizzes</a></li>

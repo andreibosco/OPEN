@@ -9,7 +9,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 
-from OPEN.course.forms import AddCourseForm, AddForumForm
+from OPEN.course.forms import AddCourseForm, AddForumForm, AddVideoForm, AddPdfForm
 from OPEN.course.models import Course, Forum, Grade, UploadedFile
 from OPEN.institute.models import Institute
 from OPEN.quiz.models import MCQuestionAttempt, LikertAttempt, OpenEndedAttempt, Quiz
@@ -59,7 +59,7 @@ def course_pdf_list(request, course_id, template_name):
         return HttpResponseRedirect(reverse('index'))        
     
     pdfs = UploadedFile.objects.filter(file_type = 'PDF', course = course.id)
- 
+
     return render_to_response(template_name, context_instance=RequestContext(request, {'pdfs': pdfs, 'course': course}))
 
 @login_required
@@ -274,3 +274,54 @@ def add_new_course(request, template_name):
     else:
         form = AddCourseForm()
         return render_to_response(template_name, context_instance=RequestContext(request, {'form': form}))
+
+@login_required
+def add_video(request, course_id, template_name):
+    """
+    Upload video
+    """
+    try:
+        course = Course.objects.get(id = course_id)
+    except Course.DoesNotExist:
+        course = None
+
+    if request.method == 'POST':
+        form = AddVideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = request.POST.get('title')
+            file = request.FILES.get('uploads')
+            file_type = file.name.split('.')[-1]
+
+            uploads = UploadedFile.objects.create(uploader = request.user, course = course, uploads = file, file_type = 'VID', title = title)
+
+            return render_to_response('course/view_video_file.html', context_instance=RequestContext(request, {'vid': uploads}))
+        else:
+            return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
+    else:
+        form = AddVideoForm()
+        return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
+
+@login_required
+def add_pdf(request, course_id, template_name):
+    """
+    Upload pdf
+    """
+    try:
+        course = Course.objects.get(id = course_id)
+    except Course.DoesNotExist:
+        course = None
+
+    if request.method == 'POST':
+        form = AddPdfForm(request.POST, request.FILES)
+        if form.is_valid():
+            title = request.POST.get('title')
+            file = request.FILES.get('uploads')
+            file_type = file.name.split('.')[-1]
+
+            uploads = UploadedFile.objects.create(uploader = request.user, course = course, uploads = file, file_type = 'PDF', title = title)
+            return HttpResponseRedirect(reverse('course_pdf_list', kwargs={'course_id': course.id}))
+        else:
+            return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))
+    else:
+        form = AddPdfForm()
+        return render_to_response(template_name, context_instance=RequestContext(request, {'form': form, 'course': course, 'course_id': course_id}))

@@ -113,9 +113,10 @@ def quiz(request, quiz_id, template_name):
             return HttpResponseRedirect(reverse('course_quiz_list', args=[quiz.course.id]))
 
     else:
-        mcquestions = MCQuestion.objects.filter(quiz = quiz)
-        likert = Likert.objects.filter(quiz = quiz)
+        mcquestions = MCQuestion.objects.filter(quiz = quiz).order_by("-date_added")
+        likert = Likert.objects.filter(quiz = quiz).order_by("-date_added")
         openended = OpenEnded.objects.filter(quiz = quiz)
+
 
         data = {
             'quiz': quiz,

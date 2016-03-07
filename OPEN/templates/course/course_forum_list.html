@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-{% trans "All Course Forums" %}
+{% trans "Forums Available" %}
 {% endblock %}
 
 {% block content %}
@@ -11,9 +11,7 @@
 
 <div class="span6 profileRows">
 	<h2 class="profileHeading">Forums for {{ course.title }}<span class="pull-right">
-        {% ifequal request.user.get_profile.role 'in' %}
-            <a href="{% url 'add_forum' course.id %}" class="Edit"><i class="icon-plus"></i> Add</a>
-        {% endifequal %}
+		<a href="{% url 'add_forum' course.id %}" class="Edit"><i class="icon-plus"></i> Add</a>
     </span></h2>
 	
 	<ul class="nav nav-tabs ml150" style="border-bottom:None;">

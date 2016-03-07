@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+{% trans "Add New Video" %}
+{% endblock %}
+
+{% block content %}
+
+ <h2>Add new video for {{ course }} </h2>
+
+ {% if form.errors %}
+  <p class="error">Please correct the errors below: {{ form.non_field_errors }}</p>
+ {% endif %}
+
+  <div class="span5" id="regForm">
+  <form enctype="multipart/form-data" method="POST" action="{% url 'add_video' course_id %}" class="form-horizontal" name="AddVideoForm">
+	{% csrf_token %}
+
+      <div class="control-group" style="margin-top:30px;">
+      <label class="control-label" for="id_title">Video Title</label>
+      <div class="controls">
+	      {{ form.title }}
+	      {% if form.title.errors %}
+        <p class="error">{{ form.title.errors.as_text }}</p>
+      {% endif %}
+      </div>
+    </div>
+
+      <div class="control-group" style="margin-top:40px;">
+      <label class="control-label" for="id_uploads">Select File</label>
+      <div class="controls">
+	      {{ form.uploads }}
+	      {% if form.uploads.errors %}
+        <p class="error">{{ form.uploads.errors.as_text }}</p>
+      {% endif %}
+      </div>
+    </div>
+
+       <input type="hidden" id="id_course" name="course" value={{ course_id }}>
+
+    <div class="control-group">
+	<div class="controls">
+		<button type="submit" class="btn">Done</button>
+	</div>
+    </div>
+  </form>
+  </div>
+
+{% endblock %}
+

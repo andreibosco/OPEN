@@ -33,3 +33,35 @@ class AddCourseForm(ModelForm):
             'start_date': DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
             'end_date': DateInput(attrs={'placeholder': 'YYYY-MM-DD'}),
         }
+
+
+class AddVideoForm(Form):
+    """
+    Add new Video
+    """
+    title = CharField(max_length=100)
+    uploads = FileField(required = True)
+
+    def clean_uploads(self):
+        uploads = self.cleaned_data['uploads']
+        ext = uploads.name.split('.')[-1]
+        if ext == 'webm':
+            return uploads
+        else:
+            raise ValidationError("Not a valid video file. Only .webm is accepted")
+
+
+class AddPdfForm(Form):
+    """
+    Add new Video
+    """
+    title = CharField(max_length=100)
+    uploads = FileField(required = True)
+
+    def clean_uploads(self):
+        uploads = self.cleaned_data['uploads']
+        ext = uploads.name.split('.')[-1]
+        if ext == 'pdf':
+            return uploads
+        else:
+            raise ValidationError("Not a valid pdf file")
