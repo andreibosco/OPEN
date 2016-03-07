@@ -27,6 +27,7 @@ class UserProfile( TimeStampAwareModel ):
     date_of_birth = models.DateField(_('YYYY-MM-DD'), null = True, blank = True)
     website = models.URLField(_('website'), null = True, blank = True)
     feedback = models.BooleanField(_('give feedback'), default = False)
+    comment = models.BooleanField(_('show comments'), default = True)
     role = models.CharField(max_length = 2, choices = ROLE_CHOICES, blank = True, null = True, default = 'st')
 
     def __unicode__(self):

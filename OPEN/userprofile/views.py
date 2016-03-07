@@ -11,6 +11,7 @@ from django.template import RequestContext
 from OPEN.course.models import Grade
 from OPEN.userprofile.forms import UserForm, UserProfileForm
 from OPEN.userprofile.models import UserProfile
+from OPEN.quiz.models import MCQuestionAttempt
 
 
 def index (request, template_name):
@@ -24,7 +25,11 @@ def index (request, template_name):
         except UserProfile.DoesNotExist:
             return HttpResponseRedirect(reverse('registration_register'))
         grades = Grade.objects.filter(student = userprofile.user, course__start_date__lte = datetime.now()).order_by('-date_added')
-        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades}))
+        try:
+            course_id = MCQuestionAttempt.objects.filter(student = request.user)[0].mcquestion.quiz.course.id
+        except IndexError:
+            course_id = None
+        return render_to_response('userprofile/profile.html', context_instance=RequestContext(request, {'userprofile': userprofile, 'grades': grades, 'course': course_id}))
     else: 
         if request.POST:
             form_type = request.POST['form']

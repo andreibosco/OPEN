@@ -7,9 +7,9 @@
 {% block content %}
 
  <div class="profile">
- <div class="container">
- 	<div class="span8 alpha">
-    <div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
+    <div class="container">
+ 	    <div class="span8 alpha">
+            <div class="avatar alpha pull-left" onmouseover="show.style.display = 'block';", onmouseout="show.style.display = 'none';">
 
 	{% if userprofile.avatar %}
     		{% thumbnail userprofile.avatar "120x120" crop="center" as avatar %}<img src="{{ avatar.url }}" height={{ avatar.height }} width={{ avatar.width }}/>{% endthumbnail %}
@@ -116,10 +116,12 @@
 	  {% else %}
 	<p class="smallText">You have no course added to your list.</p>
 	  {% endif %}
-	 </div>	
+	 </div>
 
 
       </div>
-
+</div>
+        </div>
+     </div>
 	
    {% endblock %}

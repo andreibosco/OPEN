@@ -68,13 +68,7 @@ def view_file(request, course_id, pdf_id, template_name):
     Display pdf file 
     """
     pdf = UploadedFile.objects.get(id = pdf_id)
-    name = pdf.uploads.name.split('/')[1]
-    
-    with open('%s%s' % (settings.MEDIA_ROOT, pdf.uploads)) as pdf:
-        response = HttpResponse(pdf.read(), mimetype='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=%s' % name
-        return response
-    pdf.closed
+    return HttpResponseRedirect(str(pdf.uploads.url))
 
 @login_required
 def course_video_list(request, course_id, template_name):
@@ -141,7 +135,7 @@ def add_comment(request, course_id, forum_id):
             except User.DoesNotExist:
                 return HttpResponseRedirect(reverse('registration_register'))
             comment = request.POST.get('comment')
-            
+
             comment = ThreadedComment.objects.create(comment = comment, user_id = user.id, content_type_id = '21', site_id = '1', object_pk = forum_id, submit_date = datetime.datetime.now())
             
             date = comment.submit_date.strftime("%b. %d, %Y, %I:%M ")
@@ -150,11 +144,11 @@ def add_comment(request, course_id, forum_id):
             else:
                 date = str(date) + 'p.m.'
 
-            if user.get_profile().avatar.url:
+            if user.get_profile().avatar:
                 avatar = str(user.get_profile().avatar.url)
             else:
                 avatar = settings.STATIC_URL + "img/blank-avatar-50x50.jpg"
-          
+
             return HttpResponse(simplejson.dumps({"status": True, "name": user.get_full_name(), "avatar": avatar, "comment": comment.comment, "date": str(date)}), mimetype = 'application/json')
     return HttpResponse(simplejson.dumps({"status": False}))
 
