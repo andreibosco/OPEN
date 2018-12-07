@@ -25,7 +25,13 @@ DATABASES = {
 ./manage.py migrate
 ```
 
-- To start the server: `./manage.py runserver localhost:8090`
+- To start the server, use either of these commands:
+```
+./manage.py runserver localhost:8000
+gunicorn OPEN.wsgi --log-file -
+```
+
+- To access it, go to `localhost:8000` and to access the admin section, go to `localhost:8000/admin`
 
 ## Current issues
 
