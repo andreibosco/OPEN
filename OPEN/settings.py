@@ -98,14 +98,16 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',#'django.db.backends.mysql',
         'NAME': 'OPENdatabase', #os.path.join(BASE_DIR, 'OPENdb'),
-	    'USER': 'zain',
+	    'USER': 'andreibosco',
 	    'PASSWORD': '123456',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
 # Parse database configuration from $DATABASE_URL
-import dj_database_url
-DATABASES['default'] =  dj_database_url.config()
+# import dj_database_url
+# DATABASES['default'] =  dj_database_url.config()
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
