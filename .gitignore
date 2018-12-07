@@ -5,3 +5,6 @@
 bin/
 lib/
 include/
+
+# macOS attributes
+.DS_Store
