@@ -1,1 +1,7 @@
+# compiled python
 *.pyc
+
+# virtual env files
+bin/
+lib/
+include/
