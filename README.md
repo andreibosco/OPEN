@@ -10,7 +10,7 @@
   
 - Update the database username to your username or other of your choice in the `settings.py` file:
 
-```
+```python
 DATABASES = {
   ...
   'USER': 'your username'
@@ -18,15 +18,18 @@ DATABASES = {
 }
 ```
 
+- Create a database called OPENdatabase: `createdb OPENdatabase`
+- Install packages from requirements.txt: `pip install -r requirements.txt`
 - For the first run, use the following commands:
 
-```
+```shell
 ./manage.py syncdb
 ./manage.py migrate
 ```
 
 - To start the server, use either of these commands:
-```
+
+```shell
 ./manage.py runserver localhost:8000
 gunicorn OPEN.wsgi --log-file -
 ```
